@@ -1,9 +1,21 @@
-import { Controller, Post, Body, Put, Param, Get, Delete, UseInterceptors, UploadedFile } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Put,
+  Param,
+  Get,
+  Delete,
+  UseInterceptors,
+  UploadedFile,
+  UseGuards,
+} from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { RoomCategoriesService } from './room-categories.service';
 import { CreateRoomCategoryDto } from './dtos/create-roomcategories.dto';
 import { UpdateRoomCategoryDto } from './dtos/update-roomcategories.dto';
 import { RoomCategories } from './room-categories.entity';
+import { SuperAdminAuthGuard } from 'src/superadminauth/superadminauth.gaurd';
 
 @Controller('room-categories')
 export class RoomCategoriesController {
@@ -15,16 +27,19 @@ export class RoomCategoriesController {
     @Body() createRoomCategoryDto: CreateRoomCategoryDto,
     @UploadedFile() image: Express.Multer.File,
   ) {
-    return this.roomCategoriesService.createRoomCategory(createRoomCategoryDto, image);
+    return this.roomCategoriesService.createRoomCategory(
+      createRoomCategoryDto,
+      image,
+    );
   }
-
+  @UseGuards(SuperAdminAuthGuard)
   @Get()
   async findAllRoomCategories() {
     return this.roomCategoriesService.findAllRoomCategories();
   }
 
   @Get(':id')
-  async findOneRoomCategory(@Param('id') id: number){
+  async findOneRoomCategory(@Param('id') id: number) {
     return this.roomCategoriesService.findOneRoomCategory(id);
   }
 
@@ -35,7 +50,11 @@ export class RoomCategoriesController {
     @Body() updateRoomCategoryDto: UpdateRoomCategoryDto,
     @UploadedFile() image: Express.Multer.File,
   ) {
-    return this.roomCategoriesService.updateRoomCategory(id, updateRoomCategoryDto, image);
+    return this.roomCategoriesService.updateRoomCategory(
+      id,
+      updateRoomCategoryDto,
+      image,
+    );
   }
 
   @Delete(':id')

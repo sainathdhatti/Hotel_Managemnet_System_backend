@@ -11,7 +11,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { FoodEntity } from './Food_module/Food_items/food_itm.entity';
 import { diskStorage } from 'multer';
 import path from 'path';
-import { CloudinaryService } from './cloudinary/cloudinary.service';
+
 import { Room } from './rooms/rooms.entity';
 import { RoomCategories } from './room-categories/room-categories.entity';
 import { Amenities } from './amenities/amenities.entity';
@@ -20,6 +20,7 @@ import { RoomsModule } from './rooms/rooms.module';
 import { RoomCategoriesModule } from './room-categories/room-categories.module';
 import { Food_itemsModule } from './Food_module/Food_items/food_itm.module';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
+import { SuperAdminAuthModule } from './superadminauth/superadminauth.module';
 
 @Module({
   imports: [
@@ -64,6 +65,7 @@ import { CloudinaryModule } from './cloudinary/cloudinary.module';
         },
       }),
     }),
+    SuperAdminAuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
