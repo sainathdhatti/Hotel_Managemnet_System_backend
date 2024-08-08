@@ -26,7 +26,7 @@ import { CloudinaryModule } from './cloudinary/cloudinary.module';
         username: configService.get<string>('DATABASE_USER'),
         password: configService.get<string>('DATABASE_PASSWORD'),
         database: configService.get<string>('DATABASE_NAME'),
-        entities: [FoodEntity],
+        entities: [],
         synchronize: true,
       }),
     }),
