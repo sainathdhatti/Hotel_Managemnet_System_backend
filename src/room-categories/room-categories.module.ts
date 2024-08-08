@@ -4,8 +4,8 @@ import { RoomCategoriesController } from './room-categories.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { RoomCategories } from './room-categories.entity';
 import { Amenities } from 'src/amenities/amenities.entity';
-import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
-import { CloudinaryProvider } from 'src/cloudinary/cloudinary';
+import { CloudinaryService } from '../cloudinary/cloudinary.service';
+import { CloudinaryProvider } from 'src/cloudinary/cloudinary.provider';
 
 @Module({
   imports: [TypeOrmModule.forFeature([RoomCategories, Amenities])],

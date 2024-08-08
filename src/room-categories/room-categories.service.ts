@@ -21,7 +21,7 @@ export class RoomCategoriesService {
     createRoomCategoryDto: CreateRoomCategoryDto,
     image: Express.Multer.File,
   ){
-    const uploadResult = await this.cloudinaryService.uploadFile(image);
+    const uploadResult = await this.cloudinaryService.uploadImage(image);
   
     const roomCategory = new RoomCategories();
     roomCategory.name = createRoomCategoryDto.name;
@@ -80,7 +80,7 @@ export class RoomCategoriesService {
   
     // Handle image upload if a new image is provided
     if (image) {
-      const uploadResult = await this.cloudinaryService.uploadFile(image);
+      const uploadResult = await this.cloudinaryService.uploadImage(image);
       roomCategory.imageUrl = uploadResult.url;
     }
   
