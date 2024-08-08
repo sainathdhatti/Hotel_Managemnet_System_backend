@@ -1,47 +1,69 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { TypeOrmModule } from '@nestjs/typeorm';
+
 import { MulterModule } from '@nestjs/platform-express';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { diskStorage } from 'multer';
-import * as path from 'path';
+
+import { SuperAdminModule } from './super-admin/super-admin.module';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { SuperAdmin } from './super-admin/superadmin.entity';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { FoodEntity } from './Food_module/Food_items/food_itm.entity';
+import { diskStorage } from 'multer';
+import path from 'path';
+import { CloudinaryService } from './cloudinary/cloudinary.service';
+import { Room } from './rooms/rooms.entity';
+import { RoomCategories } from './room-categories/room-categories.entity';
+import { Amenities } from './amenities/amenities.entity';
+import { AmenitiesModule } from './amenities/amenities.module';
+import { RoomsModule } from './rooms/rooms.module';
+import { RoomCategoriesModule } from './room-categories/room-categories.module';
 import { Food_itemsModule } from './Food_module/Food_items/food_itm.module';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
 
 @Module({
   imports: [
+    SuperAdminModule,
+    AmenitiesModule,
+    RoomsModule,
+    RoomCategoriesModule,
+    Food_itemsModule,
+    CloudinaryModule,
     ConfigModule.forRoot({
-      isGlobal: true,
-      envFilePath: '.env',
+      isGlobal: true, // Makes the ConfigModule global
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: async (configService: ConfigService) => ({
-        type: 'mysql',
-        host: configService.get<string>('DATABASE_HOST'),
-        port: configService.get<number>('DATABASE_PORT'),
-        username: configService.get<string>('DATABASE_USER'),
-        password: configService.get<string>('DATABASE_PASSWORD'),
-        database: configService.get<string>('DATABASE_NAME'),
-        entities: [],
+      useFactory: (configService: ConfigService) => ({
+        type: 'mysql', // Explicitly cast the type
+        host: configService.get<string>('DB_HOST'),
+        port: configService.get<number>('DB_PORT'),
+        username: configService.get<string>('DB_USERNAME'),
+        password: configService.get<string>('DB_PASSWORD'),
+        database: configService.get<string>('DB_NAME'),
+        entities: [SuperAdmin, Room, RoomCategories, Amenities, FoodEntity],
         synchronize: true,
       }),
+      inject: [ConfigService],
     }),
-    TypeOrmModule.forFeature([FoodEntity]),
+    TypeOrmModule.forFeature([
+      FoodEntity,
+      RoomCategories,
+      Amenities,
+      Room,
+      SuperAdmin,
+    ]),
     MulterModule.register({
       storage: diskStorage({
         destination: './uploads',
         filename: (req, file, cb) => {
-          const filename: string = path.parse(file.originalname).name.replace(/\s/g, '') + path.extname(file.originalname);
+          const filename: string =
+            path.parse(file.originalname).name.replace(/\s/g, '') +
+            path.extname(file.originalname);
           cb(null, `${filename}`);
         },
       }),
     }),
-    Food_itemsModule,
-    CloudinaryModule,
   ],
   controllers: [AppController],
   providers: [AppService],
