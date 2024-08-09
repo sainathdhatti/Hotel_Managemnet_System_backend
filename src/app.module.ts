@@ -64,7 +64,7 @@ import { AuthModule } from './user/Auth/CustomerAuth/Auth.module';
     Food_itemsModule,
     CloudinaryModule,
     UserModule,
-    AuthModule,
+    UserModule,
   ],
   controllers: [AppController],
   providers: [AppService],
