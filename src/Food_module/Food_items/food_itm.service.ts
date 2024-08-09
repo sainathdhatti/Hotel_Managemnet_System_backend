@@ -14,7 +14,7 @@ export class FooditemsService {
     private readonly foodRepository: Repository<FoodEntity>,
   ) {}
 
-  async createFood(createFoodDto: CreateFoodDto): Promise<FoodEntity> {
+  async createFood(createFoodDto: CreateFoodDto){
     this.logger.log('Creating a new food item');
     try {
       const food = this.foodRepository.create(createFoodDto);
@@ -27,7 +27,7 @@ export class FooditemsService {
     }
   }
 
-  async getAllFood(): Promise<FoodEntity[]> {
+  async getAllFood(){
     this.logger.log('Fetching all food items');
     try {
       const result = await this.foodRepository.find();
@@ -39,7 +39,7 @@ export class FooditemsService {
     }
   }
 
-  async getFoodById(id: number): Promise<FoodEntity> {
+  async getFoodById(id: number){
     this.logger.log(`Fetching food item with ID ${id}`);
     try {
       console.log("Getting Food By Id ")

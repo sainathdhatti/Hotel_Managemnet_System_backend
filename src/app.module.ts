@@ -20,7 +20,12 @@ import { RoomsModule } from './rooms/rooms.module';
 import { RoomCategoriesModule } from './room-categories/room-categories.module';
 import { Food_itemsModule } from './Food_module/Food_items/food_itm.module';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
+import { UserEntity } from './user/user.entity';
+import { UserModule } from './user/user.module';
+import { MailerModule } from '@nestjs-modules/mailer';
+import { AuthModule } from './user/Auth/CustomerAuth/Auth.module';
 import { SuperAdminAuthModule } from './superadminauth/superadminauth.module';
+
 
 @Module({
   imports: [
@@ -35,15 +40,16 @@ import { SuperAdminAuthModule } from './superadminauth/superadminauth.module';
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
-      useFactory: (configService: ConfigService) => ({
-        type: 'mysql', // Explicitly cast the type
-        host: configService.get<string>('DB_HOST'),
-        port: configService.get<number>('DB_PORT'),
-        username: configService.get<string>('DB_USERNAME'),
-        password: configService.get<string>('DB_PASSWORD'),
-        database: configService.get<string>('DB_NAME'),
-        entities: [SuperAdmin, Room, RoomCategories, Amenities, FoodEntity],
-        synchronize: true,
+<<<useFactory: (configService: ConfigService) => ({
+  type: 'mysql', // Explicitly cast the type
+  host: configService.get<string>('DATABASE_HOST') || configService.get<string>('DB_HOST'),
+  port: configService.get<number>('DATABASE_PORT') || configService.get<number>('DB_PORT'),
+  username: configService.get<string>('DATABASE_USER') || configService.get<string>('DB_USERNAME'),
+  password: configService.get<string>('DATABASE_PASSWORD') || configService.get<string>('DB_PASSWORD'),
+  database: configService.get<string>('DATABASE_NAME') || configService.get<string>('DB_NAME'),
+  entities: [UserEntity, SuperAdmin, Room, RoomCategories, Amenities, FoodEntity],
+
+      synchronize: true,
       }),
       inject: [ConfigService],
     }),
@@ -65,9 +71,27 @@ import { SuperAdminAuthModule } from './superadminauth/superadminauth.module';
         },
       }),
     }),
-    SuperAdminAuthModule,
-  ],
-  controllers: [AppController],
-  providers: [AppService],
-})
+imports: [
+  MailerModule.forRoot({
+    transport: {
+      host: process.env.Email_Host,
+      port: Number(process.env.Email_Port),
+      secure: process.env.Email_Secure === 'true', // false for TLS
+      auth: {
+        user: process.env.Email,
+        pass: process.env.PASSWORD,
+      },
+    },
+    defaults: {
+      from: `"Your Name" <${process.env.Email}>`,
+    },
+  }),
+  Food_itemsModule,
+  CloudinaryModule,
+  UserModule,
+  SuperAdminAuthModule,
+],
+controllers: [AppController],
+providers: [AppService],
+
 export class AppModule {}
