@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
 
 @Entity('user_entity')
 export class UserEntity {
@@ -19,4 +19,6 @@ export class UserEntity {
 
   @Column({ unique: true })
   aadharCardNumber: string;
+
+
 }
