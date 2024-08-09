@@ -9,6 +9,13 @@ import * as path from 'path';
 import { FoodEntity } from './Food_module/Food_items/food_itm.entity';
 import { Food_itemsModule } from './Food_module/Food_items/food_itm.module';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
+import { UserEntity } from './user/user.entity';
+import { UserModule } from './user/user.module';
+import { MailerModule } from '@nestjs-modules/mailer';
+import { AuthModule } from './user/Auth/CustomerAuth/Auth.module';
+
+
+
 
 @Module({
   imports: [
@@ -26,7 +33,7 @@ import { CloudinaryModule } from './cloudinary/cloudinary.module';
         username: configService.get<string>('DATABASE_USER'),
         password: configService.get<string>('DATABASE_PASSWORD'),
         database: configService.get<string>('DATABASE_NAME'),
-        entities: [],
+        entities: [UserEntity],
         synchronize: true,
       }),
     }),
@@ -40,8 +47,24 @@ import { CloudinaryModule } from './cloudinary/cloudinary.module';
         },
       }),
     }),
+    MailerModule.forRoot({
+      transport: {
+        host: process.env.Email_Host,
+        port: Number(process.env.Email_Port),
+        secure: process.env.Email_Secure === 'true', // false for TLS
+        auth: {
+          user: process.env.Email,
+          pass: process.env.PASSWORD,
+        },
+      },
+      defaults: {
+        from: `"Your Name" <${process.env.Email}>`,
+      },
+    }),
     Food_itemsModule,
     CloudinaryModule,
+    UserModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
