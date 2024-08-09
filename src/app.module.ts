@@ -65,6 +65,7 @@ import { AuthModule } from './user/Auth/CustomerAuth/Auth.module';
     CloudinaryModule,
     UserModule,
     UserModule,
+    AuthModule
   ],
   controllers: [AppController],
   providers: [AppService],
