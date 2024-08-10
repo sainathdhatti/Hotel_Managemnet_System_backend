@@ -13,9 +13,9 @@ import { UserEntity } from './user/user.entity';
 import { UserModule } from './user/user.module';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { AuthModule } from './user/Auth/CustomerAuth/Auth.module';
-
-
-
+import { FoodOrder } from './Food_module/Food_order/Food_order.entity';
+import { OrderItem } from './Food_module/Food_order/foodorderItem.entity';
+import { OrderModule } from './Food_module/Food_order/food_order.module';
 
 @Module({
   imports: [
@@ -33,11 +33,10 @@ import { AuthModule } from './user/Auth/CustomerAuth/Auth.module';
         username: configService.get<string>('DATABASE_USER'),
         password: configService.get<string>('DATABASE_PASSWORD'),
         database: configService.get<string>('DATABASE_NAME'),
-        entities: [UserEntity],
+        entities:[FoodOrder, FoodEntity, UserEntity,OrderItem],
         synchronize: true,
       }),
     }),
-    TypeOrmModule.forFeature([FoodEntity]),
     MulterModule.register({
       storage: diskStorage({
         destination: './uploads',
@@ -51,7 +50,7 @@ import { AuthModule } from './user/Auth/CustomerAuth/Auth.module';
       transport: {
         host: process.env.Email_Host,
         port: Number(process.env.Email_Port),
-        secure: process.env.Email_Secure === 'true', // false for TLS
+        secure: process.env.Email_Secure === 'true',
         auth: {
           user: process.env.Email,
           pass: process.env.PASSWORD,
@@ -64,8 +63,9 @@ import { AuthModule } from './user/Auth/CustomerAuth/Auth.module';
     Food_itemsModule,
     CloudinaryModule,
     UserModule,
-    UserModule,
-    AuthModule
+    AuthModule,
+    FoodOrder,
+    OrderModule,
   ],
   controllers: [AppController],
   providers: [AppService],

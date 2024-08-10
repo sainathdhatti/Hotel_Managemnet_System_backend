@@ -12,7 +12,7 @@ export class FooditemsController {
     private readonly cloudinaryService: CloudinaryService,
   ) {}
 
-  @Post('create')
+  @Post()
   @UseInterceptors(FileInterceptor('file'))
   async createFood(
     @Body() createFoodDto: CreateFoodDto,
@@ -37,7 +37,7 @@ export class FooditemsController {
     }
   }
 
-  @Get('list')
+  @Get()
   async listFoods() {
     try {
       const foods = await this.foodService.getAllFood();

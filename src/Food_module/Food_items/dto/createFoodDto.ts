@@ -8,7 +8,7 @@ export class CreateFoodDto {
   @IsNotEmpty()
   @IsNumberString()
   //@IsPositive() 
-  food_price: string;
+  food_price: number;
 
   @IsNotEmpty()
   @IsString()

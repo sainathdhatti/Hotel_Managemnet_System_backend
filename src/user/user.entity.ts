@@ -1,4 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
+import { FoodOrder } from 'src/Food_module/Food_order/Food_order.entity';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+
 
 @Entity('user_entity')
 export class UserEntity {
@@ -20,5 +22,7 @@ export class UserEntity {
   @Column({ unique: true })
   aadharCardNumber: string;
 
+  @OneToMany(() => FoodOrder, (order) => order.user)
+  orders: FoodOrder[];
 
 }
