@@ -1,19 +1,22 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column} from "typeorm";
+
 
 @Entity('foodlist')
 export class FoodEntity {
   @PrimaryGeneratedColumn()
   food_id: number;
 
-  @Column()
+  @Column({ type: 'varchar', length: 255 })
   food_name: string;
 
   @Column({ type: 'decimal', precision: 10, scale: 2 })
-  food_price: string;
+  food_price: number;
 
   @Column({ type: 'text' })
   food_description: string;
 
-  @Column({nullable: true })
+  @Column({ type: 'varchar', length: 255, nullable: true })
   food_image: string;
+
+  
 }
