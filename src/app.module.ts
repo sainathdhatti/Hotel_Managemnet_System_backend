@@ -16,6 +16,15 @@ import { AuthModule } from './user/Auth/CustomerAuth/Auth.module';
 import { FoodOrder } from './Food_module/Food_order/Food_order.entity';
 import { OrderItem } from './Food_module/Food_order/foodorderItem.entity';
 import { OrderModule } from './Food_module/Food_order/food_order.module';
+import { Amenities } from './amenities/amenities.entity';
+import { AmenitiesModule } from './amenities/amenities.module';
+import { Room } from './rooms/rooms.entity';
+import { RoomsModule } from './rooms/rooms.module';
+import { RoomCategories } from './room-categories/room-categories.entity';
+import { RoomCategoriesModule } from './room-categories/room-categories.module';
+import { SuperAdmin } from './super-admin/superadmin.entity';
+import { SuperAdminModule } from './super-admin/super-admin.module';
+import { SuperAdminAuthModule } from './superadminauth/superadminauth.module';
 
 @Module({
   imports: [
@@ -33,7 +42,7 @@ import { OrderModule } from './Food_module/Food_order/food_order.module';
         username: configService.get<string>('DATABASE_USER'),
         password: configService.get<string>('DATABASE_PASSWORD'),
         database: configService.get<string>('DATABASE_NAME'),
-        entities:[FoodOrder, FoodEntity, UserEntity,OrderItem],
+        entities:[FoodOrder, FoodEntity, UserEntity,OrderItem,Amenities,Room,RoomCategories,SuperAdmin],
         synchronize: true,
       }),
     }),
@@ -66,6 +75,11 @@ import { OrderModule } from './Food_module/Food_order/food_order.module';
     AuthModule,
     FoodOrder,
     OrderModule,
+    AmenitiesModule,
+    RoomsModule,
+    RoomCategoriesModule,
+    SuperAdminModule,
+    SuperAdminAuthModule
   ],
   controllers: [AppController],
   providers: [AppService],
