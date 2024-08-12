@@ -4,6 +4,21 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { MulterModule } from '@nestjs/platform-express';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { StaffMembersModule } from './staff_members/staff_members.module';
+import { Staff_Members } from './staff_members/staff_members.Entity';
+import { StaffCategoryModule } from './staff_category/staff_category.module';
+import { StaffCategory } from './staff_category/staff_category.Entity';
+import { SpaServiceModule } from './spa_service/spa_service.module';
+import { SpaService } from './spa_service/spa_service.Entity';
+import { TimeSlotModule } from './time_slot/time_slot.module';
+import { TimeSlot } from './time_slot/time_slot.Entity';
+import { SpaBookingModule } from './spa_booking/spa_booking.module';
+import { SpaAuthModule } from './spa_auth/spa_auth.module';
+import { AdminModule } from './admin/admin.module';
+import { Admin } from './admin/admin.entity';
+import { AdminAuthModule } from './admin_auth/admin_auth.module';
 import { diskStorage } from 'multer';
 import * as path from 'path';
 import { FoodEntity } from './Food_module/Food_items/food_itm.entity';
@@ -37,13 +52,16 @@ import { SuperAdminAuthModule } from './superadminauth/superadminauth.module';
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) => ({
         type: 'mysql',
-        host: configService.get<string>('DATABASE_HOST'),
-        port: configService.get<number>('DATABASE_PORT'),
-        username: configService.get<string>('DATABASE_USER'),
-        password: configService.get<string>('DATABASE_PASSWORD'),
-        database: configService.get<string>('DATABASE_NAME'),
-        entities:[FoodOrder, FoodEntity, UserEntity,OrderItem,Amenities,Room,RoomCategories,SuperAdmin],
-        synchronize: true,
+        host: configService.get<string>('DATABASE_HOST') || configService.get('DB_HOST'),
+        port: configService.get<number>('DATABASE_PORT') || parseInt(configService.get('DB_PORT'), 10),
+        username: configService.get<string>('DATABASE_USER') || configService.get('DB_USERNAME'),
+        password: configService.get<string>('DATABASE_PASSWORD') || configService.get('DB_PASSWORD'),
+        database: configService.get<string>('DATABASE_NAME') || configService.get('DB_DATABASE'),
+        entities: [
+          FoodOrder, FoodEntity, UserEntity, OrderItem, Amenities, Room, RoomCategories, SuperAdmin,
+          StaffCategory, Staff_Members, SpaService, TimeSlot, Admin
+        ],
+        synchronize: configService.get('DB_SYNCHRONIZE') === 'true' || true,
       }),
     }),
     MulterModule.register({
@@ -69,11 +87,18 @@ import { SuperAdminAuthModule } from './superadminauth/superadminauth.module';
         from: `"Your Name" <${process.env.Email}>`,
       },
     }),
+    StaffMembersModule,
+    StaffCategoryModule,
+    SpaServiceModule,
+    TimeSlotModule,
+    SpaBookingModule,
+    SpaAuthModule,
+    AdminModule,
+    AdminAuthModule,
     Food_itemsModule,
     CloudinaryModule,
     UserModule,
     AuthModule,
-    FoodOrder,
     OrderModule,
     AmenitiesModule,
     RoomsModule,
@@ -83,5 +108,8 @@ import { SuperAdminAuthModule } from './superadminauth/superadminauth.module';
   ],
   controllers: [AppController],
   providers: [AppService],
+})
+export class AppModule {}
+
 })
 export class AppModule {}

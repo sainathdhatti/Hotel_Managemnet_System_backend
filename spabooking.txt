@@ -1,0 +1,347 @@
+spa-service.entity.ts
+import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+
+@Entity()
+export class SpaService {
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @Column()
+  name: string;
+
+  @Column()
+  description: string;
+
+  @Column('decimal')
+  price: number;
+}
+
+
+time-slot.entity.ts 
+import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+
+@Entity()
+export class TimeSlot {
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @Column('time')
+  startTime: string;
+
+  @Column('time')
+  endTime: string;
+}
+
+spa-member.entity.ts
+import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+
+export type Status = 'available' | 'unavailable';
+
+@Entity()
+export class SpaMember {
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @Column()
+  name: string;
+
+  @Column()
+  phone: string;
+
+  @Column()
+  email: string;
+
+  @Column()
+  password: string;
+
+  @Column({
+    type: 'enum',
+    enum: ['available', 'unavailable'],
+    default: 'available',
+  })
+  status: Status;
+}
+
+
+spa-booking.entity.ts
+import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+
+@Entity()
+export class SpaBooking {
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @Column('date')
+  appointmentDate: Date;
+
+  @Column()
+  customerId: number; // Assuming customer information is managed elsewhere
+
+  @Column()
+  serviceId: number;
+
+  @Column()
+  staffMemberId: number;
+
+  @Column()
+  timeSlotId: number;
+}
+
+
+spa-member.service.ts
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { SpaMember } from './spa-member.entity';
+
+@Injectable()
+export class SpaMemberService {
+  constructor(
+    @InjectRepository(SpaMember)
+    private readonly spaMemberRepository: Repository<SpaMember>,
+  ) {}
+
+  async findAvailableStaff(): Promise<SpaMember[]> {
+    return this.spaMemberRepository.find({ where: { status: 'available' } });
+  }
+
+  async updateStaffStatus(staffId: number, status: 'available' | 'unavailable'): Promise<void> {
+    await this.spaMemberRepository.update(staffId, { status });
+  }
+}
+
+
+spa-booking.service.ts
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { SpaBooking } from './spa-booking.entity';
+import { SpaMemberService } from './spa-member.service';
+import { TimeSlot } from './time-slot.entity';
+import { SpaService } from './spa-service.entity';
+
+@Injectable()
+export class SpaBookingService {
+  constructor(
+    @InjectRepository(SpaBooking)
+    private readonly spaBookingRepository: Repository<SpaBooking>,
+    private readonly spaMemberService: SpaMemberService,
+  ) {}
+
+  async createBooking(appointmentDate: Date, customerId: number, serviceId: number, slotId: number): Promise<SpaBooking> {
+    // Check if any staff is available for this slot
+    const availableStaff = await this.spaMemberService.findAvailableStaff();
+    if (availableStaff.length === 0) {
+      throw new NotFoundException('No available staff for the selected date and time slot');
+    }
+
+    // Randomly select a staff member
+    const selectedStaff = availableStaff[Math.floor(Math.random() * availableStaff.length)];
+    
+    // Create a booking
+    const booking = new SpaBooking();
+    booking.appointmentDate = appointmentDate;
+    booking.customerId = customerId;
+    booking.serviceId = serviceId;
+    booking.staffMemberId = selectedStaff.id;
+    booking.timeSlotId = slotId;
+
+    // Mark the staff member as unavailable
+    await this.spaMemberService.updateStaffStatus(selectedStaff.id, 'unavailable');
+
+    return this.spaBookingRepository.save(booking);
+  }
+}
+
+
+spa-booking.controller.ts
+import { Controller, Post, Body } from '@nestjs/common';
+import { SpaBookingService } from './spa-booking.service';
+
+@Controller('spa-bookings')
+export class SpaBookingController {
+  constructor(private readonly spaBookingService: SpaBookingService) {}
+
+  @Post()
+  async createBooking(@Body() createBookingDto: CreateBookingDto) {
+    const { appointmentDate, customerId, serviceId, slotId } = createBookingDto;
+    return this.spaBookingService.createBooking(appointmentDate, customerId, serviceId, slotId);
+  }
+}
+
+
+create-booking.dto.ts 
+import { IsNotEmpty, IsInt, IsDateString } from 'class-validator';
+
+export class CreateBookingDto {
+  @IsNotEmpty()
+  @IsDateString()
+  appointmentDate: Date;
+
+  @IsNotEmpty()
+  @IsInt()
+  customerId: number;
+
+  @IsNotEmpty()
+  @IsInt()
+  serviceId: number;
+
+  @IsNotEmpty()
+  @IsInt()
+  slotId: number;
+}
+
+spaAvailabilityService
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { TimeSlot } from './time-slot.entity';
+import { SpaMember } from './spa-member.entity';
+import { SpaBooking } from './spa-booking.entity';
+import { createTransport } from 'nodemailer';
+
+@Injectable()
+export class SpaAvailabilityService {
+    constructor(
+        @InjectRepository(TimeSlot) private readonly timeSlotRepo: Repository<TimeSlot>,
+        @InjectRepository(SpaMember) private readonly spaMemberRepo: Repository<SpaMember>,
+        @InjectRepository(SpaBooking) private readonly spaBookingRepo: Repository<SpaBooking>,
+    ) {}
+
+    async bookSpa(date: Date, startTime: string, customerId: number, serviceId: number): Promise<void> {
+        const timeSlot = await this.timeSlotRepo.findOne({ where: { startTime } });
+
+        if (!timeSlot) {
+            throw new NotFoundException('Time slot not found.');
+        }
+
+        // Find available staff
+        const availableMembers = await this.spaMemberRepo.find({ where: { status: 'available' } });
+
+        if (availableMembers.length === 0) {
+            throw new NotFoundException('No available staff for the selected time slot.');
+        }
+
+        // Find existing bookings for the specified date and time slot
+        const existingBookings = await this.spaBookingRepo.count({
+            where: {
+                appointmentDate: date,
+                timeSlot: timeSlot,
+                status: 'Confirmed'
+            }
+        });
+
+        // Check if the time slot has reached its maximum capacity
+        if (existingBookings >= timeSlot.maxCustomers) {
+            throw new NotFoundException('The selected time slot is fully booked.');
+        }
+
+        // Allocate a random staff member
+        const staffIndex = Math.floor(Math.random() * availableMembers.length);
+        const allocatedStaff = availableMembers[staffIndex];
+
+        // Create a new booking
+        const booking = this.spaBookingRepo.create({
+            appointmentDate: date,
+            timeSlot: timeSlot,
+            customerId: customerId,
+            serviceId: serviceId,
+            spaMember: allocatedStaff,
+            status: 'Confirmed'
+        });
+
+        await this.spaBookingRepo.save(booking);
+
+        // Update the staff member's status to 'unavailable'
+        allocatedStaff.status = 'unavailable';
+        await this.spaMemberRepo.save(allocatedStaff);
+
+        // Send confirmation email
+        await this.sendConfirmationEmail(customerId, booking, allocatedStaff);
+    }
+
+    private async sendConfirmationEmail(customerId: number, booking: SpaBooking, staff: SpaMember) {
+        const customerEmail = 'customer@example.com'; // Retrieve customer's email from the database
+
+        const transporter = createTransport({
+            service: 'gmail',
+            auth: {
+                user: process.env.EMAIL_USER,
+                pass: process.env.EMAIL_PASS
+            }
+        });
+
+        const mailOptions = {
+            from: process.env.EMAIL_USER,
+            to: customerEmail,
+            subject: 'Spa Booking Confirmation',
+            text: `Dear Customer,
+
+Your spa booking has been confirmed!
+
+Details:
+- Date: ${booking.appointmentDate.toDateString()}
+- Time Slot: ${booking.timeSlot.startTime} - ${booking.timeSlot.endTime}
+- Service ID: ${booking.serviceId}
+- Allocated Staff: ${staff.name}
+- Staff Contact: ${staff.phone}
+
+Thank you for choosing our spa.
+
+Best regards,
+Spa Team`
+        };
+
+        await transporter.sendMail(mailOptions);
+    }
+}
+
+
+
+import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+
+@Entity()
+export class TimeSlot {
+    @PrimaryGeneratedColumn()
+    id: number;
+
+    @Column({ type: 'time' })
+    startTime: string;
+
+    @Column({ type: 'time' })
+    endTime: string;
+
+    @Column({ default: 5 }) // Max number of customers for this slot
+    maxCustomers: number;
+
+    @Column({ default: 0 })
+    bookedCustomers: number; // Track how many customers are booked for this slot
+}
+
+
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
+import { TimeSlot } from './time-slot.entity';
+import { SpaMember } from './spa-member.entity';
+
+@Entity()
+export class SpaBooking {
+    @PrimaryGeneratedColumn()
+    id: number;
+
+    @Column({ type: 'date' })
+    appointmentDate: Date; // Date of the appointment
+
+    @ManyToOne(() => TimeSlot)
+    @JoinColumn()
+    timeSlot: TimeSlot;
+
+    @ManyToOne(() => SpaMember)
+    @JoinColumn()
+    spaMember: SpaMember;
+
+    @Column()
+    customerId: number;
+
+    @Column({ type: 'enum', enum: ['Pending', 'Confirmed', 'Cancelled', 'Completed'] })
+    status: 'Pending' | 'Confirmed' | 'Cancelled' | 'Completed';
+}
