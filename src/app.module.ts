@@ -2,10 +2,13 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { MulterModule } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import * as path from 'path';
+import { MailerModule } from '@nestjs-modules/mailer';
+
+// Import entities and modules
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { StaffMembersModule } from './staff_members/staff_members.module';
 import { Staff_Members } from './staff_members/staff_members.Entity';
 import { StaffCategoryModule } from './staff_category/staff_category.module';
@@ -19,14 +22,11 @@ import { SpaAuthModule } from './spa_auth/spa_auth.module';
 import { AdminModule } from './admin/admin.module';
 import { Admin } from './admin/admin.entity';
 import { AdminAuthModule } from './admin_auth/admin_auth.module';
-import { diskStorage } from 'multer';
-import * as path from 'path';
 import { FoodEntity } from './Food_module/Food_items/food_itm.entity';
 import { Food_itemsModule } from './Food_module/Food_items/food_itm.module';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
 import { UserEntity } from './user/user.entity';
 import { UserModule } from './user/user.module';
-import { MailerModule } from '@nestjs-modules/mailer';
 import { AuthModule } from './user/Auth/CustomerAuth/Auth.module';
 import { FoodOrder } from './Food_module/Food_order/Food_order.entity';
 import { OrderItem } from './Food_module/Food_order/foodorderItem.entity';
@@ -61,7 +61,7 @@ import { SuperAdminAuthModule } from './superadminauth/superadminauth.module';
           FoodOrder, FoodEntity, UserEntity, OrderItem, Amenities, Room, RoomCategories, SuperAdmin,
           StaffCategory, Staff_Members, SpaService, TimeSlot, Admin
         ],
-        synchronize: configService.get('DB_SYNCHRONIZE') === 'true' || true,
+        synchronize: configService.get<boolean>('DB_SYNCHRONIZE') ?? true,
       }),
     }),
     MulterModule.register({
@@ -104,12 +104,9 @@ import { SuperAdminAuthModule } from './superadminauth/superadminauth.module';
     RoomsModule,
     RoomCategoriesModule,
     SuperAdminModule,
-    SuperAdminAuthModule
+    SuperAdminAuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
-})
-export class AppModule {}
-
 })
 export class AppModule {}
