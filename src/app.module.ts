@@ -25,6 +25,8 @@ import { RoomCategoriesModule } from './room-categories/room-categories.module';
 import { SuperAdmin } from './super-admin/superadmin.entity';
 import { SuperAdminModule } from './super-admin/super-admin.module';
 import { SuperAdminAuthModule } from './superadminauth/superadminauth.module';
+import { Booking } from './Bookings/booking.entity';
+import { BookingsModule } from './Bookings/booking.module';
 
 @Module({
   imports: [
@@ -42,7 +44,7 @@ import { SuperAdminAuthModule } from './superadminauth/superadminauth.module';
         username: configService.get<string>('DATABASE_USER'),
         password: configService.get<string>('DATABASE_PASSWORD'),
         database: configService.get<string>('DATABASE_NAME'),
-        entities:[FoodOrder, FoodEntity, UserEntity,OrderItem,Amenities,Room,RoomCategories,SuperAdmin],
+        entities:[FoodOrder, FoodEntity, UserEntity,OrderItem,Amenities,Room,RoomCategories,SuperAdmin,Booking],
         synchronize: true,
       }),
     }),
@@ -79,7 +81,8 @@ import { SuperAdminAuthModule } from './superadminauth/superadminauth.module';
     RoomsModule,
     RoomCategoriesModule,
     SuperAdminModule,
-    SuperAdminAuthModule
+    SuperAdminAuthModule,
+    BookingsModule
   ],
   controllers: [AppController],
   providers: [AppService],

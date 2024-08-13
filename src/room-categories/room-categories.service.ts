@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
 import { RoomCategories } from './room-categories.entity';
@@ -25,19 +25,20 @@ export class RoomCategoriesService {
   
     const roomCategory = new RoomCategories();
     roomCategory.name = createRoomCategoryDto.name;
-    roomCategory.imageUrl = uploadResult.url;
+    roomCategory.imageUrl = uploadResult.secure_url;
     roomCategory.noOfChildren = Number(createRoomCategoryDto.noOfChildren) || 0;
     roomCategory.noOfAdults = Number(createRoomCategoryDto.noOfAdults) || 0;
     roomCategory.price = Number(createRoomCategoryDto.price) || 0;
     roomCategory.description = createRoomCategoryDto.description || null;
   
-    // Convert amenitiesIds to an array of numbers
+    
     const amenitiesIds = typeof createRoomCategoryDto.amenitiesIds === 'string'
       ? JSON.parse(createRoomCategoryDto.amenitiesIds).map(id => Number(id))
       : Array.isArray(createRoomCategoryDto.amenitiesIds)
       ? createRoomCategoryDto.amenitiesIds.map(id => Number(id))
       : [];
-  
+    
+      console.log(amenitiesIds)
     console.log('Converted amenitiesIds:', amenitiesIds);
     console.log('Create DTO:', createRoomCategoryDto);
   
@@ -48,6 +49,7 @@ export class RoomCategoriesService {
   
     return this.roomCategoriesRepository.save(roomCategory);
   }
+  
   
   async findAllRoomCategories() {
     return this.roomCategoriesRepository.find({ relations: ['amenities'] });

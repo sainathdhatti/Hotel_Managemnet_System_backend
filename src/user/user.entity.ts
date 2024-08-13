@@ -24,5 +24,6 @@ export class UserEntity {
 
   @OneToMany(() => FoodOrder, (order) => order.user)
   orders: FoodOrder[];
+    bookings: any;
 
 }

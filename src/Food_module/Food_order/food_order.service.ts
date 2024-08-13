@@ -7,7 +7,7 @@ import { OrderItem } from './foodorderItem.entity';
 import { CreateOrderDto } from './dto/createFoodOrderDto.dto';
 import { plainToClass } from 'class-transformer';
 import { UserEntity } from 'src/user/user.entity';
-import { UpdateOrderDto } from './dto/updateFoodOrderDto.dto';
+import { OrderStatus, UpdateOrderDto } from './dto/updateFoodOrderDto.dto';
 
 @Injectable()
 export class OrderService {
@@ -63,6 +63,8 @@ export class OrderService {
     this.logger.log('Total price calculated:', totalPrice);
 
     const savedOrder = await this.orderRepository.save(order);
+    console.log(savedOrder);
+    
     this.logger.log('Order saved:', savedOrder);
 
     return plainToClass(FoodOrder, savedOrder, { excludeExtraneousValues: true });
@@ -70,7 +72,7 @@ export class OrderService {
 
   async getAllOrders() {
     const orders = await this.orderRepository.find({ relations: ['orderItems', 'user'] });
-    this.logger.log('Orders retrieved:', orders);
+    this.logger.log('Orders retrieved:', JSON.stringify(orders));
 
     return orders.map((order) =>
       plainToClass(FoodOrder, order, { excludeExtraneousValues: true }),
@@ -88,7 +90,7 @@ export class OrderService {
       throw new NotFoundException(`Order with ID ${id} not found`);
     }
 
-    this.logger.log('Order retrieved:', order);
+    this.logger.log('Order retrieved:', JSON.stringify(order));
     return plainToClass(FoodOrder, order, { excludeExtraneousValues: true });
   }
 
@@ -97,52 +99,69 @@ export class OrderService {
       where: { order_id: id },
       relations: ['orderItems', 'user'],
     });
-
+  
     if (!order) {
       this.logger.error(`Order with ID ${id} not found`);
       throw new NotFoundException(`Order with ID ${id} not found`);
     }
-
+  
     this.logger.log('Order found:', order);
-
-    const user = await this.userRepository.findOneBy({ id: updateOrderDto.userId });
-    if (!user) {
-      this.logger.error(`User with ID ${updateOrderDto.userId} not found`);
-      throw new NotFoundException(`User with ID ${updateOrderDto.userId} not found`);
-    }
-
-    this.logger.log('User found:', user);
-    order.user = user;
-
-    await this.orderItemRepository.remove(order.orderItems);
-    order.orderItems = [];
-    let totalPrice = 0;
-
-    for (const itemDto of updateOrderDto.orderItems) {
-      const foodItem = await this.foodItemRepository.findOneBy({ food_id: itemDto.foodItemId });
-      if (!foodItem) {
-        this.logger.error(`Food item with ID ${itemDto.foodItemId} not found`);
-        throw new NotFoundException(`Food item with ID ${itemDto.foodItemId} not found`);
+  
+    // Update user if provided
+    if (updateOrderDto.userId) {
+      const user = await this.userRepository.findOneBy({ id: updateOrderDto.userId });
+      if (!user) {
+        this.logger.error(`User with ID ${updateOrderDto.userId} not found`);
+        throw new NotFoundException(`User with ID ${updateOrderDto.userId} not found`);
       }
-
-      const orderItem = new OrderItem();
-      orderItem.foodItemId = foodItem.food_id;
-      orderItem.quantity = itemDto.quantity;
-      orderItem.price = foodItem.food_price * itemDto.quantity;
-      orderItem.foodItem = foodItem;
-      orderItem.order = order;
-
-      order.orderItems.push(orderItem);
-      totalPrice += orderItem.price;
-
-      this.logger.log('Added item to order:', orderItem);
+      order.user = user;
     }
-
-    order.totalAmount = totalPrice;
-    this.logger.log('Total price recalculated:', totalPrice);
-
+  
+    // Update order items if provided
+    if (updateOrderDto.orderItems && Array.isArray(updateOrderDto.orderItems)) {
+      await this.orderItemRepository.remove(order.orderItems);
+      order.orderItems = [];
+      let totalPrice = 0;
+  
+      for (const itemDto of updateOrderDto.orderItems) {
+        const foodItem = await this.foodItemRepository.findOneBy({ food_id: itemDto.foodItemId });
+        if (!foodItem) {
+          this.logger.error(`Food item with ID ${itemDto.foodItemId} not found`);
+          throw new NotFoundException(`Food item with ID ${itemDto.foodItemId} not found`);
+        }
+  
+        const orderItem = new OrderItem();
+        orderItem.foodItemId = foodItem.food_id;
+        orderItem.quantity = itemDto.quantity;
+        orderItem.price = foodItem.food_price * itemDto.quantity;
+        orderItem.foodItem = foodItem;
+        orderItem.order = order;
+  
+        order.orderItems.push(orderItem);
+        totalPrice += orderItem.price;
+  
+        this.logger.log('Added item to order:', orderItem);
+      }
+  
+      order.totalAmount = totalPrice;
+      this.logger.log('Total price recalculated:', totalPrice);
+    }
+  
+    // Update status if provided
+    if (updateOrderDto.status) {
+      this.logger.log(`Updating status from ${order.status} to ${updateOrderDto.status}`);
+      order.status = updateOrderDto.status;
+  
+      // Automatically update delivered_time if status is set to 'delivered'
+      if (order.status === OrderStatus.DELIVERED) {
+        order.delivered_time = new Date();
+        this.logger.log(`Setting delivered_time to ${order.delivered_time}`);
+      }
+    }
+  
     const updatedOrder = await this.orderRepository.save(order);
-    this.logger.log('Order updated:', updatedOrder);
+    this.logger.log('Order updated:', JSON.stringify(updatedOrder));
     return plainToClass(FoodOrder, updatedOrder, { excludeExtraneousValues: true });
   }
+  
 }
