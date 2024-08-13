@@ -6,9 +6,7 @@ import { diskStorage } from 'multer';
 import * as path from 'path';
 import { MailerModule } from '@nestjs-modules/mailer';
 
-// Import entities and modules
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+// Import entities
 import { StaffMembersModule } from './staff_members/staff_members.module';
 import { Staff_Members } from './staff_members/staff_members.Entity';
 import { StaffCategoryModule } from './staff_category/staff_category.module';
@@ -42,6 +40,8 @@ import { SuperAdminModule } from './super-admin/super-admin.module';
 import { SuperAdminAuthModule } from './superadminauth/superadminauth.module';
 import { Booking } from './Bookings/booking.entity';
 import { BookingsModule } from './Bookings/booking.module';
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
 
 @Module({
   imports: [
@@ -49,35 +49,30 @@ import { BookingsModule } from './Bookings/booking.module';
       isGlobal: true,
       envFilePath: '.env',
     }),
-   import { TypeOrmModule } from '@nestjs/typeorm';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { FoodOrder, FoodEntity, UserEntity, OrderItem, Amenities, Room, RoomCategories, SuperAdmin, Booking } from './entities'; // Adjust import path as necessary
-
-TypeOrmModule.forRootAsync({
-  imports: [ConfigModule],
-  inject: [ConfigService],
-  useFactory: async (configService: ConfigService) => ({
-    type: 'mysql',
-    host: configService.get<string>('DATABASE_HOST') || configService.get('DB_HOST'),
-    port: configService.get<number>('DATABASE_PORT') || parseInt(configService.get('DB_PORT'), 10),
-    username: configService.get<string>('DATABASE_USER') || configService.get('DB_USERNAME'),
-    password: configService.get<string>('DATABASE_PASSWORD') || configService.get('DB_PASSWORD'),
-    database: configService.get<string>('DATABASE_NAME') || configService.get('DB_DATABASE'),
-    entities: [
-      FoodOrder,
-      FoodEntity,
-      UserEntity,
-      OrderItem,
-      Amenities,
-      Room,
-      RoomCategories,
-      SuperAdmin,
-      Booking,
-    ],
-    synchronize: configService.get<boolean>('DB_SYNCHRONIZE') ?? true,
-  }),
-});
-
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: async (configService: ConfigService) => ({
+        type: 'mysql',
+        host: configService.get<string>('DATABASE_HOST') || configService.get('DB_HOST'),
+        port: configService.get<number>('DATABASE_PORT') || parseInt(configService.get('DB_PORT'), 10),
+        username: configService.get<string>('DATABASE_USER') || configService.get('DB_USERNAME'),
+        password: configService.get<string>('DATABASE_PASSWORD') || configService.get('DB_PASSWORD'),
+        database: configService.get<string>('DATABASE_NAME') || configService.get('DB_DATABASE'),
+        entities: [
+          FoodOrder,
+          FoodEntity,
+          UserEntity,
+          OrderItem,
+          Amenities,
+          Room,
+          RoomCategories,
+          SuperAdmin,
+          Booking,
+        ],
+        synchronize: configService.get<boolean>('DB_SYNCHRONIZE') ?? true,
+      }),
+    }),
     MulterModule.register({
       storage: diskStorage({
         destination: './uploads',
@@ -101,7 +96,7 @@ TypeOrmModule.forRootAsync({
         from: `"Your Name" <${process.env.Email}>`,
       },
     }),
-   StaffMembersModule,
+    StaffMembersModule,
     StaffCategoryModule,
     SpaServiceModule,
     TimeSlotModule,
@@ -119,7 +114,7 @@ TypeOrmModule.forRootAsync({
     RoomCategoriesModule,
     SuperAdminModule,
     SuperAdminAuthModule,
-    BookingsModule, 
+    BookingsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
