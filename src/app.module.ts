@@ -40,6 +40,8 @@ import { RoomCategoriesModule } from './room-categories/room-categories.module';
 import { SuperAdmin } from './super-admin/superadmin.entity';
 import { SuperAdminModule } from './super-admin/super-admin.module';
 import { SuperAdminAuthModule } from './superadminauth/superadminauth.module';
+import { Booking } from './Bookings/booking.entity';
+import { BookingsModule } from './Bookings/booking.module';
 
 @Module({
   imports: [
@@ -47,23 +49,35 @@ import { SuperAdminAuthModule } from './superadminauth/superadminauth.module';
       isGlobal: true,
       envFilePath: '.env',
     }),
-    TypeOrmModule.forRootAsync({
-      imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: async (configService: ConfigService) => ({
-        type: 'mysql',
-        host: configService.get<string>('DATABASE_HOST') || configService.get('DB_HOST'),
-        port: configService.get<number>('DATABASE_PORT') || parseInt(configService.get('DB_PORT'), 10),
-        username: configService.get<string>('DATABASE_USER') || configService.get('DB_USERNAME'),
-        password: configService.get<string>('DATABASE_PASSWORD') || configService.get('DB_PASSWORD'),
-        database: configService.get<string>('DATABASE_NAME') || configService.get('DB_DATABASE'),
-        entities: [
-          FoodOrder, FoodEntity, UserEntity, OrderItem, Amenities, Room, RoomCategories, SuperAdmin,
-          StaffCategory, Staff_Members, SpaService, TimeSlot, Admin
-        ],
-        synchronize: configService.get<boolean>('DB_SYNCHRONIZE') ?? true,
-      }),
-    }),
+   import { TypeOrmModule } from '@nestjs/typeorm';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { FoodOrder, FoodEntity, UserEntity, OrderItem, Amenities, Room, RoomCategories, SuperAdmin, Booking } from './entities'; // Adjust import path as necessary
+
+TypeOrmModule.forRootAsync({
+  imports: [ConfigModule],
+  inject: [ConfigService],
+  useFactory: async (configService: ConfigService) => ({
+    type: 'mysql',
+    host: configService.get<string>('DATABASE_HOST') || configService.get('DB_HOST'),
+    port: configService.get<number>('DATABASE_PORT') || parseInt(configService.get('DB_PORT'), 10),
+    username: configService.get<string>('DATABASE_USER') || configService.get('DB_USERNAME'),
+    password: configService.get<string>('DATABASE_PASSWORD') || configService.get('DB_PASSWORD'),
+    database: configService.get<string>('DATABASE_NAME') || configService.get('DB_DATABASE'),
+    entities: [
+      FoodOrder,
+      FoodEntity,
+      UserEntity,
+      OrderItem,
+      Amenities,
+      Room,
+      RoomCategories,
+      SuperAdmin,
+      Booking,
+    ],
+    synchronize: configService.get<boolean>('DB_SYNCHRONIZE') ?? true,
+  }),
+});
+
     MulterModule.register({
       storage: diskStorage({
         destination: './uploads',
@@ -87,7 +101,7 @@ import { SuperAdminAuthModule } from './superadminauth/superadminauth.module';
         from: `"Your Name" <${process.env.Email}>`,
       },
     }),
-    StaffMembersModule,
+   StaffMembersModule,
     StaffCategoryModule,
     SpaServiceModule,
     TimeSlotModule,
@@ -105,6 +119,7 @@ import { SuperAdminAuthModule } from './superadminauth/superadminauth.module';
     RoomCategoriesModule,
     SuperAdminModule,
     SuperAdminAuthModule,
+    BookingsModule, 
   ],
   controllers: [AppController],
   providers: [AppService],
