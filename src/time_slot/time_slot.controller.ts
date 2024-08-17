@@ -2,7 +2,7 @@ import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, UseGuard
 import { TimeSlotService } from './time_slot.service';
 import { CreateTimeSlotDto } from './dtos/createtime_slot.dto';
 import { UpdateTimeSlotDto } from './dtos/updatetime_slot.dto';
-import { AdminAuthGuard } from 'src/admin_auth/admin_authGuard';
+import { AdminAuthGuard } from 'src/admin/admin_auth/admin_authGuard';
 
 @Controller('time-slot')
 @UseGuards(AdminAuthGuard)

@@ -5,10 +5,6 @@ import { MulterModule } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import * as path from 'path';
 import { MailerModule } from '@nestjs-modules/mailer';
-
-// Import entities and modules
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { StaffMembersModule } from './staff_members/staff_members.module';
 import { Staff_Members } from './staff_members/staff_members.Entity';
 import { StaffCategoryModule } from './staff_category/staff_category.module';
@@ -17,11 +13,10 @@ import { SpaServiceModule } from './spa_service/spa_service.module';
 import { SpaService } from './spa_service/spa_service.Entity';
 import { TimeSlotModule } from './time_slot/time_slot.module';
 import { TimeSlot } from './time_slot/time_slot.Entity';
-import { SpaBookingModule } from './spa_booking/spa_booking.module';
 import { SpaAuthModule } from './spa_auth/spa_auth.module';
 import { AdminModule } from './admin/admin.module';
 import { Admin } from './admin/admin.entity';
-import { AdminAuthModule } from './admin_auth/admin_auth.module';
+import { AdminAuthModule } from './admin/admin_auth/admin_auth.module';
 import { FoodEntity } from './Food_module/Food_items/food_itm.entity';
 import { Food_itemsModule } from './Food_module/Food_items/food_itm.module';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
@@ -40,6 +35,8 @@ import { RoomCategoriesModule } from './room-categories/room-categories.module';
 import { SuperAdmin } from './super-admin/superadmin.entity';
 import { SuperAdminModule } from './super-admin/super-admin.module';
 import { SuperAdminAuthModule } from './superadminauth/superadminauth.module';
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
 
 @Module({
   imports: [
@@ -58,8 +55,15 @@ import { SuperAdminAuthModule } from './superadminauth/superadminauth.module';
         password: configService.get<string>('DATABASE_PASSWORD') || configService.get('DB_PASSWORD'),
         database: configService.get<string>('DATABASE_NAME') || configService.get('DB_DATABASE'),
         entities: [
-          FoodOrder, FoodEntity, UserEntity, OrderItem, Amenities, Room, RoomCategories, SuperAdmin,
-          StaffCategory, Staff_Members, SpaService, TimeSlot, Admin
+          FoodOrder,
+          FoodEntity,
+          UserEntity,
+          OrderItem,
+          Amenities,
+          Room,
+          RoomCategories,
+          SuperAdmin,
+          Admin
         ],
         synchronize: configService.get<boolean>('DB_SYNCHRONIZE') ?? true,
       }),
@@ -91,7 +95,6 @@ import { SuperAdminAuthModule } from './superadminauth/superadminauth.module';
     StaffCategoryModule,
     SpaServiceModule,
     TimeSlotModule,
-    SpaBookingModule,
     SpaAuthModule,
     AdminModule,
     AdminAuthModule,

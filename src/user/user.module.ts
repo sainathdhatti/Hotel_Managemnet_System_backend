@@ -7,7 +7,7 @@ import { FoodOrder } from "src/Food_module/Food_order/Food_order.entity";
 import { FoodEntity } from "src/Food_module/Food_items/food_itm.entity";
 
 @Module({
-    imports: [TypeOrmModule.forFeature([UserEntity]),FoodOrder, FoodOrder, FoodEntity],
+    imports: [TypeOrmModule.forFeature([UserEntity]),FoodOrder, FoodOrder, FoodEntity,],
     controllers: [UserController],
     providers: [UserService],
     exports:[UserService]

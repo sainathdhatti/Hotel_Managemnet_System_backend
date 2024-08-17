@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 
 @Entity('time_slots')
 export class TimeSlot {
@@ -16,4 +16,5 @@ export class TimeSlot {
 
   @Column({ type: 'int', default: 0 })
   bookedCustomer: number;
+
 }

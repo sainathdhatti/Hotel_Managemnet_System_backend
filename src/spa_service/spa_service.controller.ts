@@ -2,7 +2,7 @@ import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, UseGuard
 import { SpaServiceService } from './spa_service.service';
 import { CreateSpaServiceDto } from './dtos/createspa_service.dto';
 import { UpdateSpaServiceDto } from './dtos/updatespa_service.dto';
-import { AdminAuthGuard } from 'src/admin_auth/admin_authGuard';
+import { AdminAuthGuard } from 'src/admin/admin_auth/admin_authGuard';
 
 @Controller('spa-service')
 @UseGuards(AdminAuthGuard)
