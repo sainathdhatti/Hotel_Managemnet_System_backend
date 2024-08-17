@@ -2,7 +2,7 @@ import { Body, Controller, Delete, Get, NotFoundException, Param, ParseIntPipe, 
 import { StaffMembersService } from './staff_members.service';
 import { CreatestaffmembersDto } from './dtos/createstaff_members.dto';
 import { UpdatestaffmembersDto } from './dtos/updatestaff_members';
-import { AdminAuthGuard } from 'src/admin_auth/admin_authGuard';
+import { AdminAuthGuard } from 'src/admin/admin_auth/admin_authGuard';
 
 @Controller('staff-members')
 @UseGuards(AdminAuthGuard)

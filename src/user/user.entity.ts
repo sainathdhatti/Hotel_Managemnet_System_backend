@@ -26,4 +26,5 @@ export class UserEntity {
   orders: FoodOrder[];
     bookings: any;
 
+
 }

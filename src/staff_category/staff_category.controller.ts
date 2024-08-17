@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, NotFoundException, Param, ParseIntPipe, Post, Put, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
 import { StaffCategoryService } from './staff_category.service';
 import { CreatestaffcategoryDto } from './staff_category.dto';
-import { AdminAuthGuard } from 'src/admin_auth/admin_authGuard';
+import { AdminAuthGuard } from 'src/admin/admin_auth/admin_authGuard';
 
 @Controller('staff-category')
 @UseGuards(AdminAuthGuard)
