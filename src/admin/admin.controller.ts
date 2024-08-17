@@ -17,7 +17,7 @@ export class AdminController {
     async getAdminById(@Param('id',ParseIntPipe)id:number){
         const findAdmin=await this.adminService.getAdminById(id)
         if(!findAdmin){
-            return new NotFoundException('Admin with ID ${id} not found ')
+            return new NotFoundException('Admin not found ')
         }
         return findAdmin;
     }
@@ -29,10 +29,10 @@ export class AdminController {
 
     @Patch(':id')
     @UsePipes(new ValidationPipe)
-    async updateAdmin(@Param('id',ParseIntPipe)id:number, adminDetails:UpdateAdminDto){
+    async updateAdmin(@Param('id',ParseIntPipe)id:number, @Body()adminDetails:UpdateAdminDto){
         const findAdmin=await this.adminService.updateAdmin(id,adminDetails)
         if(!findAdmin){
-            return new NotFoundException('Admin with ID ${id} not found ')
+            return new NotFoundException('Admin not found ')
         }
         return findAdmin
     }
@@ -41,7 +41,7 @@ export class AdminController {
     async deleteAdmin(@Param('id',ParseIntPipe)id:number){
         const findAdmin=await this.adminService.deleteAdmin(id)
         if(!findAdmin){
-            return new NotFoundException('Admin with ID ${id} not found ')
+            return new NotFoundException('Admin not found ')
         }
         return findAdmin 
     }
