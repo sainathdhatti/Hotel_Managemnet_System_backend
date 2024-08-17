@@ -1,16 +1,18 @@
 import { IsEnum, IsNotEmpty, IsNumber } from 'class-validator';
+import { RoomStatus } from '../rooms.entity';
+
 
 export class CreateRoomDto {
   @IsNotEmpty()
   @IsNumber()
   roomCategoryId: number;
+
   @IsNotEmpty()
   @IsNumber()
-  roomNumber:number
+  roomNumber: number;
 
-
-  @IsEnum(['pending', 'booked', 'available'], {
+  @IsEnum(RoomStatus, {
     message: 'Status must be either pending, booked, or available',
   })
-  status: 'pending' | 'booked' | 'available' = 'available';
+  status: RoomStatus = RoomStatus.AVAILABLE; 
 }

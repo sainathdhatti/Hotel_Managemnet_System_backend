@@ -1,12 +1,22 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from 'typeorm';
+import { Booking } from 'src/Bookings/booking.entity';
 import { RoomCategories } from 'src/room-categories/room-categories.entity';
+
+export enum RoomStatus {
+  PENDING = 'pending',
+  BOOKED = 'booked',
+  AVAILABLE = 'available',
+}
+
 
 @Entity('rooms')
 export class Room {
   @PrimaryGeneratedColumn()
   id: number;
+
   @Column()
   roomNumber: number;
+
   @ManyToOne(() => RoomCategories, (roomCategory) => roomCategory.rooms, {
     eager: true,
   })
@@ -14,8 +24,11 @@ export class Room {
 
   @Column({
     type: 'enum',
-    enum: ['pending', 'booked', 'available'],
-    default: 'available',
+    enum: RoomStatus,
+    default: RoomStatus.AVAILABLE,
   })
-  status: 'pending' | 'booked' | 'available';
+  status: RoomStatus;
+
+  @OneToMany(() => Booking, (booking) => booking.room) // Correct relationship
+  bookings: Booking[];
 }

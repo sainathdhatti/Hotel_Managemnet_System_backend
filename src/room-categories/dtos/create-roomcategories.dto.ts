@@ -1,29 +1,29 @@
-import { IsString, IsNumber, IsArray, ArrayNotEmpty, IsNotEmpty, IsInt } from 'class-validator';
+import { IsString, IsNumber, IsArray, ArrayNotEmpty, IsNotEmpty, IsInt, IsOptional } from 'class-validator';
 
 export class CreateRoomCategoryDto {
   @IsString()
   @IsNotEmpty()
   name: string;
 
-  @IsNumber()
+  @IsInt()
   @IsNotEmpty()
   noOfChildren: number;
 
-  @IsNumber()
+  @IsInt()
   @IsNotEmpty()
   noOfAdults: number;
 
   @IsNumber()
-  @IsNotEmpty()
-  price: number;
+  @IsOptional()
+  price?: number;
 
   @IsString()
-  @IsNotEmpty()
-  description: string;
+  @IsOptional()
+  description?: string;
 
-  @IsString()
-  @IsNotEmpty()
-  imageUrl: string;
+  // @IsString()
+  // @IsOptional()
+  // imageUrl?: string;
 
   @IsArray()
   @ArrayNotEmpty()
