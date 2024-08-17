@@ -32,7 +32,7 @@ export class RoomCategoriesController {
       image,
     );
   }
-  @UseGuards(SuperAdminAuthGuard)
+ // @UseGuards(SuperAdminAuthGuard)
   @Get()
   async findAllRoomCategories() {
     return this.roomCategoriesService.findAllRoomCategories();

@@ -5,6 +5,8 @@ import { MulterModule } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import * as path from 'path';
 import { MailerModule } from '@nestjs-modules/mailer';
+import { SpaService } from './spa_service/spa_service.Entity';
+
 import { StaffMembersModule } from './staff_members/staff_members.module';
 import { Staff_Members } from './staff_members/staff_members.Entity';
 import { StaffCategoryModule } from './staff_category/staff_category.module';
@@ -108,6 +110,7 @@ import { AppService } from './app.service';
     RoomCategoriesModule,
     SuperAdminModule,
     SuperAdminAuthModule,
+    BookingsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
