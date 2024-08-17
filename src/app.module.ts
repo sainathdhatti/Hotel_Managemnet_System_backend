@@ -5,15 +5,11 @@ import { MulterModule } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import * as path from 'path';
 import { MailerModule } from '@nestjs-modules/mailer';
-import { StaffMembersModule } from './staff_members/staff_members.module';
-import { Staff_Members } from './staff_members/staff_members.Entity';
-import { StaffCategoryModule } from './staff_category/staff_category.module';
-import { StaffCategory } from './staff_category/staff_category.Entity';
 import { SpaServiceModule } from './spa_service/spa_service.module';
 import { SpaService } from './spa_service/spa_service.Entity';
 import { TimeSlotModule } from './time_slot/time_slot.module';
 import { TimeSlot } from './time_slot/time_slot.Entity';
-import { SpaAuthModule } from './spa_auth/spa_auth.module';
+// import { SpaAuthModule } from './spa_auth/spa_auth.module';
 import { AdminModule } from './admin/admin.module';
 import { Admin } from './admin/admin.entity';
 import { AdminAuthModule } from './admin/admin_auth/admin_auth.module';
@@ -37,6 +33,8 @@ import { SuperAdminModule } from './super-admin/super-admin.module';
 import { SuperAdminAuthModule } from './superadminauth/superadminauth.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { StaffCategoryModule } from './staff_category/staff_category.module';
+import { StaffCategory } from './staff_category/staff_categoryEntity';
 
 @Module({
   imports: [
@@ -63,7 +61,8 @@ import { AppService } from './app.service';
           Room,
           RoomCategories,
           SuperAdmin,
-          Admin
+          Admin,
+          StaffCategory
         ],
         synchronize: configService.get<boolean>('DB_SYNCHRONIZE') ?? true,
       }),
@@ -91,11 +90,9 @@ import { AppService } from './app.service';
         from: `"Your Name" <${process.env.Email}>`,
       },
     }),
-    StaffMembersModule,
-    StaffCategoryModule,
     SpaServiceModule,
     TimeSlotModule,
-    SpaAuthModule,
+    // SpaAuthModule,
     AdminModule,
     AdminAuthModule,
     Food_itemsModule,
@@ -108,6 +105,7 @@ import { AppService } from './app.service';
     RoomCategoriesModule,
     SuperAdminModule,
     SuperAdminAuthModule,
+    StaffCategoryModule,
   ],
   controllers: [AppController],
   providers: [AppService],
