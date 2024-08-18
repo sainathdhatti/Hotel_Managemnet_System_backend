@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { FamilyMembersController } from './family-members.controller';
+import { FamilyMembersController } from './family_members.controller';
 
 describe('FamilyMembersController', () => {
   let controller: FamilyMembersController;

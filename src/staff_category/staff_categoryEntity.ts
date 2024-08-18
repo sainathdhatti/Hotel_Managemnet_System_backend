@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
+import { StaffMembers } from "src/staff_members/staff_membersEntity";
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
 
 @Entity('staff_category')
 export class StaffCategory{
@@ -7,4 +8,7 @@ export class StaffCategory{
 
     @Column({unique:true})
     category:string
+
+    @OneToMany(()=>StaffMembers,(staffmember)=>staffmember.staffcategory)
+    staffmembers:StaffMembers[]
 }

@@ -7,6 +7,7 @@ import { StaffCategory } from './staff_categoryEntity';
 @Module({
   imports:[TypeOrmModule.forFeature([StaffCategory])],
   controllers: [StaffCategoryController],
-  providers: [StaffCategoryService]
+  providers: [StaffCategoryService],
+  exports:[StaffCategoryService]
 })
 export class StaffCategoryModule {}

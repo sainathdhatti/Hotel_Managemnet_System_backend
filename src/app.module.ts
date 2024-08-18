@@ -5,20 +5,12 @@ import { MulterModule } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import * as path from 'path';
 import { MailerModule } from '@nestjs-modules/mailer';
-<<<<<<< HEAD
-=======
-import { SpaService } from './spa_service/spa_service.Entity';
-
-import { StaffMembersModule } from './staff_members/staff_members.module';
-import { Staff_Members } from './staff_members/staff_members.Entity';
 import { StaffCategoryModule } from './staff_category/staff_category.module';
-import { StaffCategory } from './staff_category/staff_category.Entity';
->>>>>>> 26b47b6e62ac54f886a3b668a2afbb7aa516ab99
+import { StaffCategory } from './staff_category/staff_categoryEntity';
 import { SpaServiceModule } from './spa_service/spa_service.module';
 import { SpaService } from './spa_service/spa_service.Entity';
 import { TimeSlotModule } from './time_slot/time_slot.module';
 import { TimeSlot } from './time_slot/time_slot.Entity';
-// import { SpaAuthModule } from './spa_auth/spa_auth.module';
 import { AdminModule } from './admin/admin.module';
 import { Admin } from './admin/admin.entity';
 import { AdminAuthModule } from './admin/admin_auth/admin_auth.module';
@@ -42,8 +34,12 @@ import { SuperAdminModule } from './super-admin/super-admin.module';
 import { SuperAdminAuthModule } from './superadminauth/superadminauth.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { StaffCategoryModule } from './staff_category/staff_category.module';
-import { StaffCategory } from './staff_category/staff_categoryEntity';
+import { BookingsModule } from './Bookings/booking.module';
+import { Booking } from './Bookings/booking.entity';
+import { StaffMembersModule } from './staff_members/staff_members.module';
+import { StaffMembers } from './staff_members/staff_membersEntity';
+import { FamilyMembersModule } from './family_members/family_members.module';
+import { FamilyMembers } from './family_members/family_membersEntity';
 
 @Module({
   imports: [
@@ -71,7 +67,12 @@ import { StaffCategory } from './staff_category/staff_categoryEntity';
           RoomCategories,
           SuperAdmin,
           Admin,
-          StaffCategory
+          StaffCategory,
+          StaffMembers,
+          SpaService,
+          TimeSlot,
+          FamilyMembers,
+          Booking
         ],
         synchronize: configService.get<boolean>('DB_SYNCHRONIZE') ?? true,
       }),
@@ -101,7 +102,7 @@ import { StaffCategory } from './staff_category/staff_categoryEntity';
     }),
     SpaServiceModule,
     TimeSlotModule,
-    // SpaAuthModule,
+    //SpaAuthModule,
     AdminModule,
     AdminAuthModule,
     Food_itemsModule,
@@ -114,11 +115,10 @@ import { StaffCategory } from './staff_category/staff_categoryEntity';
     RoomCategoriesModule,
     SuperAdminModule,
     SuperAdminAuthModule,
-<<<<<<< HEAD
     StaffCategoryModule,
-=======
     BookingsModule,
->>>>>>> 26b47b6e62ac54f886a3b668a2afbb7aa516ab99
+    StaffMembersModule,
+    FamilyMembersModule,
   ],
   controllers: [AppController],
   providers: [AppService],
