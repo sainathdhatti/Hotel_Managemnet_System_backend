@@ -1,34 +1,35 @@
-import { IsEmail, IsNotEmpty, IsString, Matches } from 'class-validator';
-import { StaffStatus } from '../staff_status';
-import { StaffGender } from '../staff_gender';
+import { IsEmail, IsNotEmpty, isString, IsString, Length, Matches } from "class-validator";
+import { StaffCategory } from "src/staff_category/staff_categoryEntity";
 
-export class CreatestaffmembersDto {
+export class createStaffMembersDto{
     @IsNotEmpty()
     @IsString()
-    firstName: string;
+    @Length(3,10)
+    firstName:string
 
     @IsNotEmpty()
     @IsString()
-    lastName: string;
+    @Length(3,10)
+    lastName:string
 
+    @IsNotEmpty()
+    @Matches(/^\d+$/, { message: 'Phone number must contain only digits' })
+    phone: string;
+
+    @IsNotEmpty()
+    @IsString()
+    gender:string
+
+    @IsNotEmpty()
     @IsEmail()
-    @IsNotEmpty()
-    email: string;
+    email:string
 
     @IsNotEmpty()
     @IsString()
-    password: string;
+    @Length(6,10)
+    password:string
 
-    @IsString()
-    @Matches(/^\d{10}$/, { message: 'Phone number must be exactly 10 digits' })
-    phoneNumber: string;
-
-    @IsString()
-    status: string="available";
-
-    @IsString()
     @IsNotEmpty()
-    gender:string;
+    staffcategory:StaffCategory
 
-    staffcategoryId: number;
 }

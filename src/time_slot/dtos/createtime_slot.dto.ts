@@ -11,7 +11,7 @@ export class CreateTimeSlotDto {
 
   @IsInt()
   @Min(1)
-  maxCustomer: number = 8;
+  maxCustomer: number = 7;
 
   @IsInt()
   @Min(0)

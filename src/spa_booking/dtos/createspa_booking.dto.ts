@@ -1,27 +1,28 @@
-import { IsNotEmpty, IsNumber, IsString, IsDate, IsOptional } from 'class-validator';
+import { IsDate, IsNotEmpty, IsNumber } from 'class-validator'; // Fixed imports
 
-export class CreateBookingDto {
-  @IsNotEmpty()
-  @IsDate()
-  appointmentDate: string;
+export class CreateSpaBookingDto {
+    @IsNotEmpty()
+    @IsDate()
+    booking_date: Date; 
 
-  @IsNotEmpty()
-  @IsNumber()
-  customerId: number;
+    status: string; 
 
-  @IsNotEmpty()
-  @IsNumber()
-  serviceId: number;
+    @IsNotEmpty()
+    @IsNumber()
+    userId: number; 
 
-  @IsNotEmpty()
-  @IsNumber()
-  staffMemberId: number;
+    @IsNotEmpty()
+    @IsNumber()
+    familymemberId: number; 
 
-  @IsNotEmpty()
-  @IsNumber()
-  timeSlotId: number;
+    @IsNotEmpty()
+    @IsNumber()
+    spaserviceId: number; 
 
-  @IsOptional()
-  @IsString()
-  status?: string;
+    @IsNotEmpty()
+    @IsNumber()
+    timeslotId: number; 
+
+    @IsNumber()
+    staffmemberId: number; 
 }

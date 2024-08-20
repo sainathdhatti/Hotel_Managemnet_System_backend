@@ -1,49 +1,48 @@
-import { Body, Controller, Delete, Get, NotFoundException, Param, ParseIntPipe, Post, Put, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Delete, Get, NotFoundException, Param, ParseIntPipe, Post, Patch, UsePipes, ValidationPipe } from '@nestjs/common';
 import { AdminService } from './admin.service';
 import { CreateAdminDto } from './dtos/createadmin.dto';
 import { UpdateAdminDto } from './dtos/updateadmin.dto';
 
 @Controller('admin')
 export class AdminController {
-    constructor(private readonly adminService: AdminService) {}
+    constructor(private readonly adminService:AdminService){}
 
     @Get()
-    async getAllAdmin() {
-        return this.adminService.getAllAdmin();
+    async getAllAdmin(){
+        return await this.adminService.getAllAdmin();
     }
 
     @Get(':id')
-    async getAdminById(@Param('id',ParseIntPipe) id: number) {
-        const admin = await this.adminService.getAdminById(id);
-        if (!admin) {
-            throw new NotFoundException(`Admin not found`);
+    @UsePipes(new ValidationPipe)
+    async getAdminById(@Param('id',ParseIntPipe)id:number){
+        const findAdmin=await this.adminService.getAdminById(id)
+        if(!findAdmin){
+            return new NotFoundException('Admin not found ')
         }
-        return admin;
+        return findAdmin;
     }
 
     @Post()
-    @UsePipes(new ValidationPipe)
-    async createAdmin(@Body() createAdmin: CreateAdminDto) {
-        return this.adminService.createAdmin(createAdmin);
+    async createAdmin(@Body() adminDetails:CreateAdminDto){
+        return await this.adminService.createAdmin(adminDetails);
     }
 
-    @Put(':id')
+    @Patch(':id')
     @UsePipes(new ValidationPipe)
-    async updateAdmin(@Param('id',ParseIntPipe) id: number, @Body() updateAdmin: UpdateAdminDto) {
-        const admin = await this.adminService.updateAdmin(id, updateAdmin);
-        if (!admin) {
-            throw new NotFoundException(`Admin  not found`);
+    async updateAdmin(@Param('id',ParseIntPipe)id:number, @Body()adminDetails:UpdateAdminDto){
+        const findAdmin=await this.adminService.updateAdmin(id,adminDetails)
+        if(!findAdmin){
+            return new NotFoundException('Admin not found ')
         }
-        return admin;
+        return findAdmin
     }
 
     @Delete(':id')
-    async deleteAdmin(@Param('id', ParseIntPipe) id: number): Promise<void> {
-        try {
-            await this.adminService.deleteAdmin(id);
-            return; 
-        } catch (error) {
-            throw new NotFoundException(error.message);
+    async deleteAdmin(@Param('id',ParseIntPipe)id:number){
+        const findAdmin=await this.adminService.deleteAdmin(id)
+        if(!findAdmin){
+            return new NotFoundException('Admin not found ')
         }
+        return findAdmin 
     }
 }

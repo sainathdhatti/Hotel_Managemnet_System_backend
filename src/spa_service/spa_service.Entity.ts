@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { SpaBooking } from 'src/spa_booking/spa_bookingEntity';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 
 @Entity('spa_services')
 export class SpaService {
@@ -13,4 +14,8 @@ export class SpaService {
 
   @Column({ type: 'decimal', precision: 10, scale: 2 })
   price: number;
+
+  @OneToMany(()=>SpaBooking,(spabooking)=>spabooking.spaservice)
+  spabookings:SpaBooking[]
+
 }

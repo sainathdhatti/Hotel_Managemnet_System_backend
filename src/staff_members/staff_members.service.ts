@@ -1,73 +1,58 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { StaffMembers } from './staff_membersEntity';
 import { Repository } from 'typeorm';
-import { Staff_Members } from './staff_members.entity';
-import { CreatestaffmembersDto } from './dtos/createstaff_members.dto';
-import { UpdatestaffmembersDto } from './dtos/updatestaff_members';
-import { StaffCategoryService } from '../staff_category/staff_category.service';
-import * as bcrypt from 'bcrypt';
+import { createStaffMembersDto } from './dtos/createstaff_members.dto';
+import { updateStaffMembersDto } from './dtos/updatestaff_members.dto';
+import { StaffCategoryService } from 'src/staff_category/staff_category.service';
 
 @Injectable()
 export class StaffMembersService {
-    constructor(
-        @InjectRepository(Staff_Members)
-        private readonly staffmemberRepo: Repository<Staff_Members>,
-        private readonly staffcategoryService: StaffCategoryService
-    ) {}
+    constructor(@InjectRepository(StaffMembers)private readonly staffmemberRepo:Repository<StaffMembers>,
+    private staffCategoryService:StaffCategoryService){}
 
-    async getAllStaffMembers() {
-        return await this.staffmemberRepo.find({ relations: ['staffcategory'] });
+    async getAllStaffMembers(){
+        return await this.staffmemberRepo.find({
+            relations:['staffcategory']
+        })
+        
     }
 
-    async getStaffMemberById(id: number) {
-        const staffmember = await this.staffmemberRepo.findOne({
-            where: { id },
-            relations: ['staffcategory'],
-        });
-        if (!staffmember) throw new NotFoundException('Staff Member not found');
-        return staffmember;
+    async getStaffMemberById(id:number){
+        const findstaffmember=await this.staffmemberRepo.findOne({
+            where:{id},
+            relations:['staffcategory']
+        })
+        return findstaffmember
     }
 
-    async createStaffMember(addstaffmembers:CreatestaffmembersDto){
-        if(addstaffmembers.password){
-            addstaffmembers.password = await bcrypt.hash(addstaffmembers.password, 10);
+    async createStaffMember(staffmemberDetails: createStaffMembersDto) {
+        const staffmember=new StaffMembers()
+        staffmember.firstName=staffmemberDetails.firstName;
+        staffmember.lastName=staffmemberDetails.lastName
+        staffmember.phone=staffmemberDetails.phone;
+        staffmember.email=staffmemberDetails.email
+        staffmember.password=staffmemberDetails.password
+        staffmember.gender=staffmemberDetails.gender;
+        staffmember.staffcategory=staffmemberDetails.staffcategory
+        return await this.staffmemberRepo.save(staffmember)
+    }
+
+    async updateStaffMember(id:number, staffmemberDetail:updateStaffMembersDto){
+        let staffcategory=null
+        if(staffmemberDetail.staffcategory){
+            staffcategory=await this.staffCategoryService.getStaffCategoryById(+staffmemberDetail.staffcategory)
         }
-        const staffmember = new Staff_Members();
-        Object.assign(staffmember, addstaffmembers);
-        return await this.staffmemberRepo.save(staffmember);
+        return await this.staffmemberRepo.update(id,{...staffmemberDetail,staffcategory})
     }
 
-    async updateStaffMember(id:number,updatestaffmember:UpdatestaffmembersDto){
-        let findstaffmember=await this.staffmemberRepo.findOneBy({id})
-        let staffmember=null
-        if(!findstaffmember){
-            throw new NotFoundException('Staff Member not found');
-        }
-        else{
-            if(updatestaffmember.password){
-                 findstaffmember.password=await bcrypt.hash(updatestaffmember.password, 10);
-            }
-            if (updatestaffmember.staffcategoryId) {
-                const staffCategory = await this.staffcategoryService.getStaffCategoryById(updatestaffmember.staffcategoryId);
-                if (!staffCategory) {
-                    throw new NotFoundException('Staff Category not found');
-                }
-                findstaffmember.staffcategory=staffCategory;
-            }
-            Object.assign(findstaffmember, updatestaffmember);
-            return await this.staffmemberRepo.save(findstaffmember)
+    async deleteStaffMember(id:number){
+        const findstaffmember=await this.staffmemberRepo.findOneBy({id})
+        if(findstaffmember){
+            return await this.staffmemberRepo.remove(findstaffmember)
         }
     }
-    
-  
-
-    async deleteStaffMember(id: number) {
-        const result = await this.staffmemberRepo.delete({ id });
-        if (result.affected === 0) throw new NotFoundException('Staff Member not found');
-        return 'Staff Member deleted successfully...';
-    }
-
-    async findOne(email: string): Promise<Staff_Members | undefined> {
-        return this.staffmemberRepo.findOne({ where: { email },relations:['staffcategory'] });
+    async findOne(email: string) {
+        return this.staffmemberRepo.findOne({ where: { email } });
       }
 }

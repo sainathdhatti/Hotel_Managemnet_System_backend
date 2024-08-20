@@ -1,40 +1,39 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { StaffCategory } from './staff_category.Entity';
+import { StaffCategory } from './staff_categoryEntity';
 import { Repository } from 'typeorm';
-import { CreatestaffcategoryDto } from './staff_category.dto';
+import { createStaffCategoryDto } from './staff_category.dto';
 
 @Injectable()
 export class StaffCategoryService {
     constructor(
-        @InjectRepository(StaffCategory) private readonly staffcategoryRepo:Repository<StaffCategory>,
+        @InjectRepository(StaffCategory) private readonly staffCategoyRepo:Repository<StaffCategory>
     ){}
 
     async getAllStaffCategory(){
-        return await this.staffcategoryRepo.find()
+        return await this.staffCategoyRepo.find()
     }
 
     async getStaffCategoryById(id:number){
-        return await this.staffcategoryRepo.findOneBy({id})
+        return await this.staffCategoyRepo.findOneBy({id})
     }
 
-    async createStaffCategory(staffcategory:CreatestaffcategoryDto){
-        return await this.staffcategoryRepo.save(staffcategory)
+    async createstaffCategory(staffCategory:createStaffCategoryDto){
+        return await this.staffCategoyRepo.save(staffCategory)
     }
 
-    async updateStaffCategory(id:number, staffcategory:CreatestaffcategoryDto){
-        const findstaffcategory=await this.staffcategoryRepo.findOneBy({id})
-        if(findstaffcategory){
-            const updateStaffCategory={...findstaffcategory, ...staffcategory}
-            return await this.staffcategoryRepo.save(updateStaffCategory);
+    async updatestaffCategory(id:number, staffCategory:createStaffCategoryDto){
+        const findstaffCategory=await this.staffCategoyRepo.findOneBy({id})
+        if(findstaffCategory){
+            return await this.staffCategoyRepo.update(id,staffCategory);
         }
     }
 
-
-    async deleteStaffCategory(id:number){
-        const findstaffcategory=await this.staffcategoryRepo.findOneBy({id})
-        if(findstaffcategory){
-           return await this.staffcategoryRepo.remove(findstaffcategory)
-        }
+    async deletestaffCategory(id:number){
+        const findstaffCategory=await this.staffCategoyRepo.findOneBy({id})
+        if(findstaffCategory){
+            return await this.staffCategoyRepo.remove(findstaffCategory);
+        } 
     }
+
 }

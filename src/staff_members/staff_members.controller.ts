@@ -1,46 +1,52 @@
-import { Body, Controller, Delete, Get, NotFoundException, Param, ParseIntPipe, Put, Post, UsePipes, ValidationPipe, UseGuards } from '@nestjs/common';
+import { Controller, Get,Patch, Post,Delete,Param,Body,UsePipes,ValidationPipe,ParseIntPipe, NotFoundException } from '@nestjs/common';
 import { StaffMembersService } from './staff_members.service';
-import { CreatestaffmembersDto } from './dtos/createstaff_members.dto';
-import { UpdatestaffmembersDto } from './dtos/updatestaff_members';
-import { AdminAuthGuard } from 'src/admin_auth/admin_authGuard';
+import { createStaffMembersDto } from './dtos/createstaff_members.dto';
+import { updateStaffMembersDto } from './dtos/updatestaff_members.dto';
 
-@Controller('staff-members')
-@UseGuards(AdminAuthGuard)
+@Controller('staff_members')
 export class StaffMembersController {
-    constructor(private readonly staffmembersService: StaffMembersService) {}
-    
+    constructor(private readonly staffmemberService:StaffMembersService){}
+
     @Get()
-    async getAllStaffMembers() {
-        return await this.staffmembersService.getAllStaffMembers();
+    async getAllStaffMembers(){
+        return await this.staffmemberService.getAllStaffMembers()
     }
 
     @Get(':id')
-    async getStaffMemberById(@Param('id', ParseIntPipe) id: number) {
-        const staffmember = await this.staffmembersService.getStaffMemberById(id);
-        if (!staffmember) {
-            throw new NotFoundException('Staff Member not found.');
-        }  
-        return staffmember;
+    @UsePipes(new ValidationPipe())
+    async getStaffMemberById(@Param('id', ParseIntPipe) id: number){
+    const findstaffMember = await this.staffmemberService.getStaffMemberById(id);
+    if (!findstaffMember) {
+      throw new NotFoundException('StaffMember not found');
     }
+
+    return findstaffMember;
+  }
 
     @Post()
-    @UsePipes(new ValidationPipe)
-    async createStaffMember(@Body() staffmember: CreatestaffmembersDto) {
-        return await this.staffmembersService.createStaffMember(staffmember);
+    async createStaffMember(@Body()staffmemberDetails:createStaffMembersDto){
+        return await this.staffmemberService.createStaffMember(staffmemberDetails) 
     }
 
-    @Put(':id')
-    @UsePipes(new ValidationPipe)
-    async updateStaffMember(@Param('id', ParseIntPipe) id: number, @Body() staffmember: UpdatestaffmembersDto) {
-       return await this.staffmembersService.updateStaffMember(id,staffmember);
+    @Patch(':id')
+    @UsePipes(new ValidationPipe())
+    async updateStaffMember(@Param('id',ParseIntPipe)id:number,@Body()staffmemberDetails:updateStaffMembersDto){
+        console.log(staffmemberDetails)
+        const findstaffmember=await this.staffmemberService.updateStaffMember(id,staffmemberDetails)
+        console.log(findstaffmember)
+        if(!findstaffmember){
+            throw new NotFoundException('StaffMember not found')
+        }
+        return findstaffmember
     }
 
     @Delete(':id')
-    async deleteStaffMember(@Param('id', ParseIntPipe) id: number) {
-        const deleteResult = await this.staffmembersService.deleteStaffMember(id);
-        if (!deleteResult) {
-            throw new NotFoundException('Staff Member not found.');
+    @UsePipes(new ValidationPipe())
+    async deleteStaffMember(@Param('id',ParseIntPipe)id:number){
+        const findstaffmember=await this.staffmemberService.deleteStaffMember(id)
+        if(!findstaffmember){
+            throw new NotFoundException('StaffMember not found')
         }
-        return deleteResult;
+        return findstaffmember
     }
 }

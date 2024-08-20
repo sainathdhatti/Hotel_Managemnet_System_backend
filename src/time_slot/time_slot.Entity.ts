@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { SpaBooking } from 'src/spa_booking/spa_bookingEntity';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 
 @Entity('time_slots')
 export class TimeSlot {
@@ -16,4 +17,7 @@ export class TimeSlot {
 
   @Column({ type: 'int', default: 0 })
   bookedCustomer: number;
+
+  @OneToMany(()=>SpaBooking,(spabooking)=>spabooking.timeslot)
+  spabookings:SpaBooking[]
 }

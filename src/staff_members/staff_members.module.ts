@@ -1,12 +1,13 @@
 import { Module } from '@nestjs/common';
 import { StaffMembersController } from './staff_members.controller';
 import { StaffMembersService } from './staff_members.service';
-import { Staff_Members } from './staff_members.Entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { StaffMembers } from './staff_membersEntity';
 import { StaffCategoryModule } from 'src/staff_category/staff_category.module';
+import { StaffCategory } from 'src/staff_category/staff_categoryEntity';
 
 @Module({
-  imports:[TypeOrmModule.forFeature([Staff_Members]),StaffCategoryModule],
+  imports:[TypeOrmModule.forFeature([StaffMembers]),StaffCategoryModule],
   controllers: [StaffMembersController],
   providers: [StaffMembersService],
   exports:[StaffMembersService]
