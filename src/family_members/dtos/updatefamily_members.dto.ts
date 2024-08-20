@@ -15,7 +15,4 @@ export class updateFamily_MemberDto{
     @IsString()
     @IsOptional()
     gender:string
-
-    @IsOptional()
-    user:UserEntity
 }

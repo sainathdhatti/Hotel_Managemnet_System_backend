@@ -3,11 +3,11 @@ import { FamilyMembersController } from './family_members.controller';
 import { FamilyMembersService } from './family_members.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { FamilyMembers } from './family_membersEntity';
-import { UserModule } from 'src/user/user.module';
 
 @Module({
-  imports:[TypeOrmModule.forFeature([FamilyMembers]),UserModule],
+  imports:[TypeOrmModule.forFeature([FamilyMembers])],
   controllers: [FamilyMembersController],
-  providers: [FamilyMembersService]
+  providers: [FamilyMembersService],
+  exports:[FamilyMembersService]
 })
 export class FamilyMembersModule {}

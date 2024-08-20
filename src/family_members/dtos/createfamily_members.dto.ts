@@ -16,7 +16,4 @@ export class createFamily_MemberDto{
     @IsNotEmpty()
     gender:string
 
-    @IsNotEmpty()
-    user:UserEntity
-
 }
