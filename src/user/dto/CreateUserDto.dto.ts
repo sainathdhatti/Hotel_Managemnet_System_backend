@@ -3,7 +3,11 @@ import { IsString, IsEmail, IsNotEmpty, IsOptional, Length } from 'class-validat
 export class CreateUserDto {
   @IsString()
   @IsNotEmpty()
-  name: string;
+  firstName: string;
+
+  @IsString()
+  @IsNotEmpty()
+  lastName: string;
 
   @IsEmail()
   @IsNotEmpty()

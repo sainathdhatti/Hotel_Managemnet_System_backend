@@ -1,4 +1,5 @@
-import { Injectable, NotFoundException, ConflictException, Logger } from '@nestjs/common';
+
+import { Injectable, NotFoundException, ConflictException, Logger, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
@@ -6,6 +7,7 @@ import { UserEntity } from './user.entity';
 import { CreateUserDto } from './dto/CreateUserDto.dto';
 import { UpdateUserDto } from './dto/UpdateUserDto.dto'; 
 import { MailerService } from '@nestjs-modules/mailer';
+import { nanoid } from 'nanoid';
 
 @Injectable()
 export class UserService {
@@ -43,7 +45,7 @@ export class UserService {
   }
 
   async sendWelcomeEmail(email: string, name: string) {
-    const subject = `Welcome to Hotel Services, ${name}!`;
+    const subject = `Welcome to Kanyarashi, ${name}!`;
     const textContent = `Dear ${name},\n\nWelcome to Movie Rentals! We're thrilled to have you as a member of our community.\n\nEnjoy your time with us!\n\nBest regards,\nThe Movie Rentals Team`;
 
     await this.mailerService.sendMail({
@@ -112,5 +114,56 @@ export class UserService {
 
   async findEmail(email: string){
     return await this.userRepository.findOne({ where: { email } });
+  }
+
+  async forgetPassword(email: string): Promise<void> {
+    // Check if the user exists
+    const user = await this.userRepository.findOne({ where: { email } });
+    if (!user) {
+      this.logger.warn(`User with email ${email} not found`);
+      throw new NotFoundException('User not found');
+    }
+
+    // Generate a password reset token
+    const token = nanoid(64);
+    user.resetToken = token;
+    user.resetTokenExpiry = new Date(Date.now() + 3600000); // Token valid for 1 hour
+
+    // Save the token and expiry to the user record
+    await this.userRepository.save(user);
+
+    // Create a password reset URL
+    const resetUrl = `http://yourfrontend.com/reset-password?token=${token}`;
+
+    // Send the password reset email
+    await this.mailerService.sendMail({
+      to: email,
+      subject: 'Password Reset Request',
+      text: `To reset your password, please click the following link: ${resetUrl}`,
+      html: `<p>To reset your password, please click the following link: <a href="${resetUrl}">${resetUrl}</a></p>`,
+    });
+
+    this.logger.log(`Password reset email sent to ${email}`);
+  }
+
+  async resetPassword(token: string, newPassword: string): Promise<void> {
+    // Find the user by reset token
+    const user = await this.userRepository.findOne({
+      where: { resetToken: token },
+    });
+    
+    if (!user || user.resetTokenExpiry < new Date()) {
+      this.logger.warn(`Invalid or expired token for ${token}`);
+      throw new BadRequestException('Invalid or expired token');
+    }
+
+    // Hash the new password and update the user's password
+    user.passwordHash = await bcrypt.hash(newPassword, 10);
+    user.resetToken = null;
+    user.resetTokenExpiry = null;
+
+    // Save the updated user record
+    await this.userRepository.save(user);
+    this.logger.log('Password has been reset successfully');
   }
 }

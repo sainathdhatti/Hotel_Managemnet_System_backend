@@ -1,5 +1,6 @@
+import { SpaBooking } from "src/spa_booking/spa_bookingEntity";
 import { UserEntity } from "src/user/user.entity";
-import { Entity, PrimaryGeneratedColumn,Column, ManyToMany, ManyToOne } from "typeorm";
+import { Entity, PrimaryGeneratedColumn,Column, ManyToMany, ManyToOne, OneToMany } from "typeorm";
 
 @Entity('family_members')
 export class FamilyMembers{
@@ -15,7 +16,7 @@ export class FamilyMembers{
     @Column()
     gender:string
 
-    @ManyToOne(()=> UserEntity,(user)=>user.familymembers)
-    user:UserEntity
+    @OneToMany(()=>SpaBooking,(spabooking)=>spabooking.familymember)
+    spabookings:SpaBooking[]
 
 }

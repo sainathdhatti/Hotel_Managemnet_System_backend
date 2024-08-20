@@ -40,6 +40,8 @@ import { StaffMembersModule } from './staff_members/staff_members.module';
 import { StaffMembers } from './staff_members/staff_membersEntity';
 import { FamilyMembersModule } from './family_members/family_members.module';
 import { FamilyMembers } from './family_members/family_membersEntity';
+import { SpaBookingModule } from './spa_booking/spa_booking.module';
+import { SpaBooking } from './spa_booking/spa_bookingEntity';
 
 @Module({
   imports: [
@@ -72,6 +74,7 @@ import { FamilyMembers } from './family_members/family_membersEntity';
           SpaService,
           TimeSlot,
           FamilyMembers,
+          SpaBooking,
           Booking
         ],
         synchronize: configService.get<boolean>('DB_SYNCHRONIZE') ?? true,
@@ -119,6 +122,7 @@ import { FamilyMembers } from './family_members/family_membersEntity';
     BookingsModule,
     StaffMembersModule,
     FamilyMembersModule,
+    SpaBookingModule,
   ],
   controllers: [AppController],
   providers: [AppService],

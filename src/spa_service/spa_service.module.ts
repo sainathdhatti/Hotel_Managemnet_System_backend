@@ -7,6 +7,8 @@ import { SpaService } from './spa_service.Entity';
 @Module({
   imports:[TypeOrmModule.forFeature([SpaService])],
   controllers: [SpaServiceController],
-  providers: [SpaServiceService]
+  providers: [SpaServiceService],
+  exports:[SpaServiceService]
+
 })
 export class SpaServiceModule {}
