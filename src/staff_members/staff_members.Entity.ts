@@ -29,7 +29,7 @@ export class Staff_Members {
   @Column()
   gender:string;
    
-  @ManyToOne(() => StaffCategory, (staffcategory) => staffcategory.staff_member,{nullable:false})
+  @ManyToOne(() => StaffCategory, (staffcategory) => staffcategory.staff_member)
   staffcategory: StaffCategory;
 
 }

@@ -42,6 +42,7 @@ import { Booking } from './Bookings/booking.entity';
 import { BookingsModule } from './Bookings/booking.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { SpaBooking } from './spa_booking/spa_booking.Entity';
 
 @Module({
   imports: [
@@ -69,8 +70,14 @@ import { AppService } from './app.service';
           RoomCategories,
           SuperAdmin,
           Booking,
+          TimeSlot,
+          // SpaBooking,
+          SpaService,
+          StaffCategory,
+          Staff_Members,
+          Admin 
         ],
-        synchronize: configService.get<boolean>('DB_SYNCHRONIZE') ?? true,
+        synchronize:true,
       }),
     }),
     MulterModule.register({

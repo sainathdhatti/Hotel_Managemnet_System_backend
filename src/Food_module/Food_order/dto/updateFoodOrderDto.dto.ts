@@ -24,7 +24,7 @@ export class UpdateOrderDto {
   orderItems?: OrderItemDto[];
 
   @Column({ type: 'enum', enum: OrderStatus, default: OrderStatus.PENDING })
-  status: OrderStatus;
+  status?: OrderStatus;
 
   @IsOptional()
   @IsPositive()

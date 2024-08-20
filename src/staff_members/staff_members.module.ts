@@ -9,6 +9,6 @@ import { StaffCategoryModule } from 'src/staff_category/staff_category.module';
   imports:[TypeOrmModule.forFeature([Staff_Members]),StaffCategoryModule],
   controllers: [StaffMembersController],
   providers: [StaffMembersService],
-  exports:[TypeOrmModule.forFeature([Staff_Members]),StaffMembersService]
+  exports:[StaffMembersService]
 })
 export class StaffMembersModule {}
