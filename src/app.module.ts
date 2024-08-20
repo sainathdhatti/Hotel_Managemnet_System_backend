@@ -42,6 +42,7 @@ import { FamilyMembersModule } from './family_members/family_members.module';
 import { FamilyMembers } from './family_members/family_membersEntity';
 import { SpaBookingModule } from './spa_booking/spa_booking.module';
 import { SpaBooking } from './spa_booking/spa_bookingEntity';
+import { SpaAuthModule } from './spa_auth/spa_auth.module';
 
 @Module({
   imports: [
@@ -77,7 +78,7 @@ import { SpaBooking } from './spa_booking/spa_bookingEntity';
           SpaBooking,
           Booking
         ],
-        synchronize: configService.get<boolean>('DB_SYNCHRONIZE') ?? true,
+        synchronize:true,
       }),
     }),
     MulterModule.register({
@@ -105,7 +106,7 @@ import { SpaBooking } from './spa_booking/spa_bookingEntity';
     }),
     SpaServiceModule,
     TimeSlotModule,
-    //SpaAuthModule,
+    SpaAuthModule,
     AdminModule,
     AdminAuthModule,
     Food_itemsModule,
