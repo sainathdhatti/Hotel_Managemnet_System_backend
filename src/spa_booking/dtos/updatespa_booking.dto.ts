@@ -1,23 +1,11 @@
-import { IsDate, isNotEmpty, IsNotEmpty, IsOptional } from "class-validator";
-import { FamilyMembers } from "src/family_members/family_membersEntity";
+import { IsDate, IsOptional } from "class-validator";
 import { SpaService } from "src/spa_service/spa_service.Entity";
-import { StaffMembers } from "src/staff_members/staff_membersEntity";
 import { TimeSlot } from "src/time_slot/time_slot.Entity";
-import { UserEntity } from "src/user/user.entity";
 
-export class updateSpaBookingDto{
+export class updateSpaBookingDto{    
     @IsOptional()
     @IsDate()
-    booking_date:Date
-
-    @IsOptional()
-    status:string
-    
-    @IsOptional()
-    userId=UserEntity
-    
-    @IsOptional()
-    familymemberId:FamilyMembers
+    booking_date: Date; 
 
     @IsOptional()
     spaserviceId:SpaService
@@ -25,6 +13,4 @@ export class updateSpaBookingDto{
     @IsOptional()
     timeslotId:TimeSlot
 
-    @IsNotEmpty()
-    staffmemberId=StaffMembers
 }

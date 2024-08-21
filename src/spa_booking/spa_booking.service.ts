@@ -9,6 +9,7 @@ import { SpaServiceService } from 'src/spa_service/spa_service.service';
 import { TimeSlotService } from 'src/time_slot/time_slot.service';
 import { StaffMembersService } from 'src/staff_members/staff_members.service';
 import { StaffMembers } from 'src/staff_members/staff_membersEntity';
+import { updateSpaBookingDto } from './dtos/updatespa_booking.dto';
 
 @Injectable()
 export class SpaBookingService {
@@ -80,10 +81,12 @@ export class SpaBookingService {
     
         // Fetch all staff members
         const allStaff = await this.staffmemberService.getAllStaffMembers();
+        // check the avilability of staff based on gender
+        const filteredStaff = allStaff.filter(staff => staff.gender === familyMember.gender);
     
         // Filter available staff
         const availableStaff = await Promise.all(
-          allStaff.map(async (staff) => {
+          filteredStaff.map(async (staff) => {
             // Check if the staff member is already booked at the given date and time slot
             const isBooked = await this.spabookingRepo.findOne({
               where: {
@@ -105,9 +108,9 @@ export class SpaBookingService {
           throw new ConflictException('No available staff member for the given date and time slot');
         }
     
-        // Optionally, you can choose a staff member based on specific criteria or randomly
-        const allocatedStaff = availableStaffMembers[0]; // Choose the first available staff member
-    
+        // Choose the first available staff member
+        const allocatedStaff = availableStaffMembers[0]; 
+        
         // Create a new SpaBooking instance
         const booking = this.spabookingRepo.create({
           booking_date,
@@ -117,9 +120,36 @@ export class SpaBookingService {
           spaservice: spaService,
           timeslot: timeSlot,
           staffmember: allocatedStaff,
+          
         });
     
         return this.spabookingRepo.save(booking);
       }
+ 
+      async updateBookingByFamilyMember(userId:number,familymemberId:number,updateSpaDetails:updateSpaBookingDto){
+        const user = await this.userService.getUser(userId);
+        const familymember = await this.familymemberService.getFamilyMemberById(familymemberId);
+       
+        // Check if both user and family member exist
+        if (user && familymember) {
+        // Fetch the current spa booking (assuming you have a method to get it)
+        const spaBooking = await this.spabookingRepo.findOne({
+        where: { user, familymember } // Adjust the query according to your schema
+       });
+
+      if (spaBooking) {
+        // Update the spa booking details
+        spaBooking.spaservice = updateSpaDetails.spaserviceId 
+        spaBooking.timeslot = updateSpaDetails.timeslotId
+        spaBooking.booking_date = updateSpaDetails.booking_date 
         
+        // Save the updated booking
+        await this.spabookingRepo.save(spaBooking);
+      } else {
+        throw new Error('Spa booking not found');
+      }
+    } else {
+      throw new Error('User or Family Member not found');
+    }
+  }
 }

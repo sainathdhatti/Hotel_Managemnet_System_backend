@@ -5,7 +5,6 @@ export class createDashboard_DetailsDto{
     @IsString()
     name:string
 
-    @IsNotEmpty()
     @IsNumber()
     count:number
 }

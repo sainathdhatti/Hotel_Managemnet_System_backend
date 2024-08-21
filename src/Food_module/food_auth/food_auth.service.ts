@@ -4,7 +4,7 @@ import { StaffMembersService } from 'src/staff_members/staff_members.service';
 const bcrypt = require('bcrypt');
 
 @Injectable()
-export class SpaAuthService {
+export class FoodAuthService {
     constructor(
         private staffmembersService: StaffMembersService,
         private jwtService: JwtService,
@@ -14,32 +14,26 @@ export class SpaAuthService {
         const staffmember = await this.staffmembersService.findOne(email);
         console.log(staffmember);
         if (!staffmember) {
-          throw new UnauthorizedException('Spa Member not found');
+          throw new UnauthorizedException('Food Member not found');
         }
     
         if (!staffmember.password) {
-          throw new ForbiddenException('Password not found for the Spa Member');
+          throw new ForbiddenException('Password not found for the Food Member');
         }
     
         const passwordsMatch = await bcrypt.compare(password, staffmember.password);
         if (!passwordsMatch) {
           throw new UnauthorizedException('Invalid Password');
         }
-<<<<<<// Log the staff category to debug
-console.log(staffmember.staffcategory.category);
-
-// Check if the staff member's category is "SpaStaff"
-const isSpaStaff = staffmember.staffcategory.category === "SpaStaff";
-console.log(isSpaStaff); // Log the result of the check
-
-// If the staff member is not SpaStaff, throw a ForbiddenException
-if (!isSpaStaff) {
-    throw new ForbiddenException('Access restricted to spa staff only');
-}
-
-// Optional: Log the entire staffmember object for additional debugging
-console.log(staffmember);
-
+        console.log(staffmember.staffcategory.category);
+        
+        const isSpaStaff = staffmember.staffcategory.category==="CookStaff"
+        console.log(isSpaStaff)
+        if (!isSpaStaff) {
+            throw new ForbiddenException('Access restricted to spa staff only');
+        }
+        // Check if staffcategory and category exist
+        console.log(staffmember)
 
         const payload = { id: staffmember.id, email: staffmember.email, staffcategory: staffmember.staffcategory };
         return {
@@ -47,4 +41,3 @@ console.log(staffmember);
         };
       }
 }
-
