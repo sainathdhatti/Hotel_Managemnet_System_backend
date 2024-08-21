@@ -1,9 +1,9 @@
 import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
-import { AdminAuthService } from './admin_auth.service';
+import { FoodAuthService } from './food_auth.service';
 
-@Controller('adminlogin')
-export class AdminAuthController {
-    constructor(private authService: AdminAuthService) {}
+@Controller('foodlogin')
+export class FoodAuthController {
+    constructor(private authService: FoodAuthService) {}
 
   @HttpCode(HttpStatus.OK)
   @Post('login')

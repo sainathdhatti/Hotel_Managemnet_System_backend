@@ -8,7 +8,7 @@ import {
   import { Request } from 'express';
   
   @Injectable()
-  export class SpaAuthGuard implements CanActivate {
+  export class FoodAuthGuard implements CanActivate {
     constructor(private jwtService: JwtService) {}
   
     async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -25,7 +25,7 @@ import {
             secret: process.env.HOTEL_MANAGEMENT_SECRET
           }
         );
-        request['SpaStaff'] = payload;
+        request['FoodStaff'] = payload;
       } catch {
         throw new UnauthorizedException();
       }

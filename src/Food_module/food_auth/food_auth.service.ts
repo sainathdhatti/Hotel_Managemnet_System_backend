@@ -4,7 +4,7 @@ import { StaffMembersService } from 'src/staff_members/staff_members.service';
 const bcrypt = require('bcrypt');
 
 @Injectable()
-export class SpaAuthService {
+export class FoodAuthService {
     constructor(
         private staffmembersService: StaffMembersService,
         private jwtService: JwtService,
@@ -14,11 +14,11 @@ export class SpaAuthService {
         const staffmember = await this.staffmembersService.findOne(email);
         console.log(staffmember);
         if (!staffmember) {
-          throw new UnauthorizedException('Spa Member not found');
+          throw new UnauthorizedException('Food Member not found');
         }
     
         if (!staffmember.password) {
-          throw new ForbiddenException('Password not found for the Spa Member');
+          throw new ForbiddenException('Password not found for the Food Member');
         }
     
         const passwordsMatch = await bcrypt.compare(password, staffmember.password);
@@ -27,7 +27,7 @@ export class SpaAuthService {
         }
         console.log(staffmember.staffcategory.category);
         
-        const isSpaStaff = staffmember.staffcategory.category==="SpaStaff"
+        const isSpaStaff = staffmember.staffcategory.category==="CookStaff"
         console.log(isSpaStaff)
         if (!isSpaStaff) {
             throw new ForbiddenException('Access restricted to spa staff only');
@@ -41,4 +41,3 @@ export class SpaAuthService {
         };
       }
 }
-

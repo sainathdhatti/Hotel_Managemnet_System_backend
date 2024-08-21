@@ -42,6 +42,9 @@ import { FamilyMembersModule } from './family_members/family_members.module';
 import { FamilyMembers } from './family_members/family_membersEntity';
 import { SpaBookingModule } from './spa_booking/spa_booking.module';
 import { SpaBooking } from './spa_booking/spa_bookingEntity';
+import { SpaAuthModule } from './spa_auth/spa_auth.module';
+import { SpaAuthGuard } from './spa_auth/spa_authGuard';
+import { FoodAuthModule } from './food_module/food_auth/food_auth.module';
 
 @Module({
   imports: [
@@ -75,7 +78,8 @@ import { SpaBooking } from './spa_booking/spa_bookingEntity';
           TimeSlot,
           FamilyMembers,
           SpaBooking,
-          Booking
+          Booking,
+          SpaAuthGuard
         ],
         synchronize: configService.get<boolean>('DB_SYNCHRONIZE') ?? true,
       }),
@@ -105,7 +109,7 @@ import { SpaBooking } from './spa_booking/spa_bookingEntity';
     }),
     SpaServiceModule,
     TimeSlotModule,
-    //SpaAuthModule,
+    SpaAuthModule,
     AdminModule,
     AdminAuthModule,
     Food_itemsModule,
@@ -123,6 +127,7 @@ import { SpaBooking } from './spa_booking/spa_bookingEntity';
     StaffMembersModule,
     FamilyMembersModule,
     SpaBookingModule,
+    FoodAuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

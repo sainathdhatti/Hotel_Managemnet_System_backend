@@ -11,7 +11,7 @@ import { SuperAdminAuthService } from './superadminauth.service';
 import { SuperAdminAuthGuard } from './superadminauth.gaurd';
 import { LoginDto } from './dto/superadminlogin.dto';
 
-@Controller('superadminauth')
+@Controller('superadminlogin')
 export class SuperAdminAuthController {
   constructor(private readonly superAdminAuthService: SuperAdminAuthService) {}
   @Post('login')

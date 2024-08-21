@@ -13,7 +13,7 @@ import { AuthService } from './Auth.service';
 import { AuthGuard } from './AuthGuard.guard';
   
   
-  @Controller('auth')
+  @Controller('userlogin')
   export class AuthController {
     constructor(private readonly authService: AuthService) {}
   

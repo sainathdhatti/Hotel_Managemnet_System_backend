@@ -1,7 +1,7 @@
 import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
 import { SpaAuthService } from './spa_auth.service';
 
-@Controller('spa-auth')
+@Controller('spalogin')
 export class SpaAuthController {
     constructor(private authService: SpaAuthService) {}
 
