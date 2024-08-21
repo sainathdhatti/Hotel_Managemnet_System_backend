@@ -25,13 +25,13 @@ export class UserService {
     const existingUser = await this.userRepository.findOneBy({ email: createUserDto.email });
     if (existingUser) {
       this.logger.warn(`Email ${createUserDto.email} already in use`);
-      throw new ConflictException('Email already in use');
+      throw  new ConflictException('Email already in use');
     }
 
-    const passwordHash = await bcrypt.hash(createUserDto.password, 10);
+    const password = await bcrypt.hash(createUserDto.password, 10);
     const user = {
       ...createUserDto,
-      passwordHash,
+      password,
     };
 
     await this.userRepository.save(user);
@@ -158,7 +158,7 @@ export class UserService {
     }
 
     // Hash the new password and update the user's password
-    user.passwordHash = await bcrypt.hash(newPassword, 10);
+    user.password = await bcrypt.hash(newPassword, 10);
     user.resetToken = null;
     user.resetTokenExpiry = null;
 
