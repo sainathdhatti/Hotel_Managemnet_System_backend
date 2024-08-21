@@ -21,7 +21,7 @@ import {
         const payload = await this.jwtService.verifyAsync(
           token,
           {
-            secret: process.env.Movie_Rental_SECRET
+            secret: "dfghjkl"
           }
         );
         request['user'] = payload;
