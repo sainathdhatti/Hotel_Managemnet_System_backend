@@ -10,5 +10,5 @@ export class SignInDto{
     
     @IsString()
     @IsNotEmpty()
-    passwordHash:string;
+    password:string;
 }

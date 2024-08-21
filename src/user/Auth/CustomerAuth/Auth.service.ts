@@ -19,13 +19,13 @@ export class AuthService {
       throw new UnauthorizedException('Invalid user');
     }
     const passwordMatch = await bcrypt.compare(
-      signInDto.passwordHash,
-      user.passwordHash,
+      signInDto.password,
+      user.password,
     );
     if (!passwordMatch) {
       throw new UnauthorizedException('Invalid Password');
     }
-    const { passwordHash, ...result } = user;
+    const { password, ...result } = user;
 
     return {
       access_token: await this.jwtService.signAsync(result),
