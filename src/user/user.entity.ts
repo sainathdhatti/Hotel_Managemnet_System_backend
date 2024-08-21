@@ -21,7 +21,7 @@ export class UserEntity {
   phoneNumber: string;
 
   @Column()
-  passwordHash: string;
+  password: string;
 
   @Column({ unique: true })
   aadharCardNumber: string;

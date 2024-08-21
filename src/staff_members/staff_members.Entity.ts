@@ -1,7 +1,6 @@
+import { StaffCategory } from "src/staff_category/staff_categoryEntity";
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
-import { StaffStatus } from "./staff_status";
-import { StaffCategory } from "src/staff_category/staff_category.Entity";
-import { StaffGender } from "./staff_gender";
+
 
 @Entity("spa_members")
 export class Staff_Members {
@@ -29,7 +28,7 @@ export class Staff_Members {
   @Column()
   gender:string;
    
-  @ManyToOne(() => StaffCategory, (staffcategory) => staffcategory.staff_member)
+  @ManyToOne(() => StaffCategory, (staffcategory) => staffcategory.staffmembers)
   staffcategory: StaffCategory;
 
 }

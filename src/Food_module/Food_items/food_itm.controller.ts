@@ -18,7 +18,7 @@ export class FooditemsController {
     @Body() createFoodDto: CreateFoodDto,
     @UploadedFile() file: Express.Multer.File,
   ) {
-    try {
+    try { 
       if (!file) {
         throw new HttpException('File not provided', HttpStatus.BAD_REQUEST);
       }

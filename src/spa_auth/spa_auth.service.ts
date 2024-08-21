@@ -25,11 +25,11 @@ export class SpaAuthService {
         if (!passwordsMatch) {
           throw new UnauthorizedException('Invalid Password');
         }
-        const isSpaStaff = staffmember.staffcategory.category==="SpaStaff"
-        console.log(isSpaStaff)
-        if (!isSpaStaff) {
-            throw new ForbiddenException('Access restricted to spa staff only');
-        }
+        // const isSpaStaff = staffmember.staffcategory.category==="SpaStaff"
+        // console.log(isSpaStaff)
+        // if (!isSpaStaff) {
+        //     throw new ForbiddenException('Access restricted to spa staff only');
+        // }
 
         const payload = { id: staffmember.id, email: staffmember.email, staffcategory: staffmember.staffcategory };
         return {
