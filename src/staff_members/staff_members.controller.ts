@@ -1,7 +1,8 @@
-import { Controller, Get,Patch, Post,Delete,Param,Body,UsePipes,ValidationPipe,ParseIntPipe, NotFoundException } from '@nestjs/common';
+import { Controller, Get,Patch, Post,Delete,Param,Body,UsePipes,ValidationPipe,ParseIntPipe, NotFoundException, UseGuards } from '@nestjs/common';
 import { StaffMembersService } from './staff_members.service';
 import { createStaffMembersDto } from './dtos/createstaff_members.dto';
 import { updateStaffMembersDto } from './dtos/updatestaff_members.dto';
+import { SpaAuthGuard } from 'src/spa_auth/spa_authGuard';
 
 @Controller('staff_members')
 export class StaffMembersController {
@@ -41,6 +42,7 @@ export class StaffMembersController {
     }
 
     @Delete(':id')
+    @UseGuards(SpaAuthGuard)
     @UsePipes(new ValidationPipe())
     async deleteStaffMember(@Param('id',ParseIntPipe)id:number){
         const findstaffmember=await this.staffmemberService.deleteStaffMember(id)

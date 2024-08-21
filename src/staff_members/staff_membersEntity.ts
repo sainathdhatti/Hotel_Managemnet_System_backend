@@ -25,9 +25,6 @@ export class StaffMembers{
     @Column()
     password:string
 
-    @Column({default:'available'})
-    status:string
-
     @ManyToOne(()=>StaffCategory, staffcategory=>staffcategory.staffmembers)
     staffcategory:StaffCategory
 

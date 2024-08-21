@@ -8,6 +8,6 @@ export class Dashboard_Details{
     @Column()
     name:string;
 
-    @Column()
+    @Column({default:0})
     count:number
 }

@@ -38,15 +38,15 @@ export class UserService {
     this.logger.log(`User with email ${createUserDto.email} created successfully`);
 
     
-    await this.sendWelcomeEmail(user.email, user.name);
+    await this.sendWelcomeEmail(user.email, user.firstName);
     this.logger.log(`Welcome email sent to ${user.email}`);
 
     return user;
   }
 
-  async sendWelcomeEmail(email: string, name: string) {
-    const subject = `Welcome to Kanyarashi, ${name}!`;
-    const textContent = `Dear ${name},\n\nWelcome to Movie Rentals! We're thrilled to have you as a member of our community.\n\nEnjoy your time with us!\n\nBest regards,\nThe Movie Rentals Team`;
+  async sendWelcomeEmail(email: string, firstName: string) {
+    const subject = `Welcome to Kanyarashi, ${firstName}!`;
+    const textContent = `Dear ${firstName},\n\nWelcome to Movie Rentals! We're thrilled to have you as a member of our community.\n\nEnjoy your time with us!\n\nBest regards,\nThe Movie Rentals Team`;
 
     await this.mailerService.sendMail({
       to: email,

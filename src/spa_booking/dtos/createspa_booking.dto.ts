@@ -23,6 +23,6 @@ export class CreateSpaBookingDto {
     @IsNumber()
     timeslotId: number; 
 
-    @IsNumber()
-    staffmemberId: number; 
+    // @IsNumber()
+    // staffmemberId: number; 
 }

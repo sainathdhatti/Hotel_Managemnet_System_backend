@@ -4,6 +4,7 @@ import { StaffMembers } from './staff_membersEntity';
 import { Repository } from 'typeorm';
 import { createStaffMembersDto } from './dtos/createstaff_members.dto';
 import { updateStaffMembersDto } from './dtos/updatestaff_members.dto';
+import * as bcrypt from 'bcrypt';
 import { StaffCategoryService } from 'src/staff_category/staff_category.service';
 
 @Injectable()
@@ -32,9 +33,11 @@ export class StaffMembersService {
         staffmember.lastName=staffmemberDetails.lastName
         staffmember.phone=staffmemberDetails.phone;
         staffmember.email=staffmemberDetails.email
-        staffmember.password=staffmemberDetails.password
         staffmember.gender=staffmemberDetails.gender;
         staffmember.staffcategory=staffmemberDetails.staffcategory
+        const hashpassword=await bcrypt.hash(staffmemberDetails.password,10)
+        staffmember.password=hashpassword
+
         return await this.staffmemberRepo.save(staffmember)
     }
 
@@ -53,6 +56,7 @@ export class StaffMembersService {
         }
     }
     async findOne(email: string) {
-        return this.staffmemberRepo.findOne({ where: { email } });
-      }
+        return this.staffmemberRepo.findOne({ where: { email },relations:['staffcategory']});
+    }
+
 }
