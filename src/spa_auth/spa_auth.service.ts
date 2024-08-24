@@ -25,8 +25,6 @@ export class SpaAuthService {
         if (!passwordsMatch) {
           throw new UnauthorizedException('Invalid Password');
         }
-<<<<<<// Log the staff category to debug
-console.log(staffmember.staffcategory.category);
 
 // Check if the staff member's category is "SpaStaff"
 const isSpaStaff = staffmember.staffcategory.category === "SpaStaff";
