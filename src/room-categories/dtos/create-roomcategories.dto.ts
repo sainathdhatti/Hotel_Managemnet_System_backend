@@ -14,19 +14,20 @@ export class CreateRoomCategoryDto {
   noOfAdults: number;
 
   @IsNumber()
-  @IsOptional()
+  @IsNotEmpty()
   price?: number;
 
   @IsString()
-  @IsOptional()
+  @IsNotEmpty()
   description?: string;
 
-  // @IsString()
-  // @IsOptional()
-  // imageUrl?: string;
+  @IsString()
+  @IsNotEmpty()
+  imageUrl?: string;
 
   @IsArray()
   @ArrayNotEmpty()
+  @IsNotEmpty()
   @IsInt({ each: true })
   amenitiesIds: number[];
 }

@@ -35,4 +35,9 @@ export class RoomsController {
   async removeRoom(@Param('id') id: number){
     return this.roomsService.remove(id);
   }
+
+  @Post('allocateRoom')
+  async findAvailableRooms(categoryId:number, checkInDate:Date,checkOutDate:Date){
+      return await this.findAvailableRooms(categoryId,checkInDate,checkOutDate);
+  }
 }

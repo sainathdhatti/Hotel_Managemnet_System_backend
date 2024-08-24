@@ -1,6 +1,9 @@
-import { ForbiddenException, Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { AdminService } from 'src/admin/admin.service';
+import { SignInDto } from './dto/SignIn.dto';
+import * as bcrypt from 'bcrypt';
+
 
 @Injectable()
 export class AdminAuthService {
@@ -9,27 +12,22 @@ export class AdminAuthService {
         private jwtService: JwtService,
       ) {}
     
-      async signIn(email: string, password: string): Promise<any> {
-        const admin = await this.adminService.findOne(email);
-        console.log(admin);
+      async signIn(signInDto: SignInDto){
+        const admin = await this.adminService.findOne(signInDto.email);
         if (!admin) {
-          throw new UnauthorizedException('Admin Member not found');
+          throw new UnauthorizedException('Invalid admin');
         }
+        const hashpassword=await bcrypt.compare(signInDto.password,admin.password)
+        if (!hashpassword) {
+          throw new UnauthorizedException('Invalid Password');
+        }
+        const { password, ...result } = admin;
     
-        if (!admin.password) {
-          throw new ForbiddenException('Password not found for the Admin');
-        }
-    
-        const isAdmin = admin.email===process.env.ADMIN_EMAIL && 
-                        admin.password===process.env.ADMIN_PASSWORD_HASH
-        console.log(isAdmin)
-        if (!isAdmin) {
-            throw new ForbiddenException('Access restricted to spa staff only');
-        }
-
-        const payload = { id: admin.id, email: admin.email, password:admin.password };
         return {
-            access_token: await this.jwtService.signAsync(payload),
+          access_token: await this.jwtService.signAsync(result),
         };
+      } 
+      logout() {
+        return `logout Sucessufully`;
       }
 }
