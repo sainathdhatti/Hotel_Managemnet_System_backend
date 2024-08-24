@@ -28,7 +28,7 @@ export class RoomCategories {
   @ManyToMany(() => Amenities, amenity => amenity.roomCategories)
     amenities: Amenities[];
 
-  @ManyToOne(()=>Room,(room)=>room.roomCategory)
+  @OneToMany(()=>Room,(room)=>room.roomCategory)
   room:Room
   
  @OneToMany(()=>Booking,(roombooking)=>roombooking.roomcategory)
