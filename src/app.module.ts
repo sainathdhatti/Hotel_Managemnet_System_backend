@@ -34,8 +34,6 @@ import { SuperAdminModule } from './super-admin/super-admin.module';
 import { SuperAdminAuthModule } from './superadminauth/superadminauth.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { BookingsModule } from './Bookings/booking.module';
-import { Booking } from './Bookings/booking.entity';
 import { StaffMembersModule } from './staff_members/staff_members.module';
 import { StaffMembers } from './staff_members/staff_membersEntity';
 import { FamilyMembersModule } from './family_members/family_members.module';
@@ -44,6 +42,8 @@ import { SpaBookingModule } from './spa_booking/spa_booking.module';
 import { SpaBooking } from './spa_booking/spa_bookingEntity';
 import { SpaAuthModule } from './spa_auth/spa_auth.module';import { SpaAuthGuard } from './spa_auth/spa_authGuard';
 import { FoodAuthModule } from './food_module/food_auth/food_auth.module';
+import { BookingsModule } from './bookings/bookings.module';
+import { Booking } from './bookings/bookings.Entity';
 
 
 @Module({

@@ -1,5 +1,4 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from 'typeorm';
-import { Booking } from 'src/Bookings/booking.entity';
 import { RoomCategories } from 'src/room-categories/room-categories.entity';
 
 export enum RoomStatus {
@@ -7,8 +6,6 @@ export enum RoomStatus {
   BOOKED = 'booked',
   AVAILABLE = 'available',
 }
-
-
 @Entity('rooms')
 export class Room {
   @PrimaryGeneratedColumn()
@@ -17,7 +14,7 @@ export class Room {
   @Column()
   roomNumber: number;
 
-  @ManyToOne(() => RoomCategories, (roomCategory) => roomCategory.rooms, {
+  @ManyToOne(() => RoomCategories, (roomCategory) => roomCategory.room, {
     eager: true,
   })
   roomCategory: RoomCategories;
@@ -28,7 +25,4 @@ export class Room {
     default: RoomStatus.AVAILABLE,
   })
   status: RoomStatus;
-
-  @OneToMany(() => Booking, (booking) => booking.room) // Correct relationship
-  bookings: Booking[];
 }

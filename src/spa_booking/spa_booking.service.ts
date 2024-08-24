@@ -122,7 +122,7 @@ export class SpaBookingService {
     const allStaff = await this.staffmemberService.getAllStaffMembers();
     // check the avilability of staff based on gender
     const filteredStaff = allStaff.filter(
-      (staff) => staff.gender === familyMember.gender
+      (staff) => staff.gender  === familyMember.gender
     );
 
     // Filter available staff

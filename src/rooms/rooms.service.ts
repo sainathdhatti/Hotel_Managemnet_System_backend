@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Room, RoomStatus } from './rooms.entity';
+import { Room} from './rooms.entity';
 import { CreateRoomDto } from './dtos/create-room.dto';
 import { UpdateRoomDto } from './dtos/update-room.dto';
 import { RoomCategories } from 'src/room-categories/room-categories.entity';
@@ -31,7 +31,6 @@ export class RoomsService {
     }
 
     room.roomCategory = roomCategory;
-    room.status = createRoomDto.status || RoomStatus.AVAILABLE; // Use enum
 
     return this.roomsRepository.save(room);
   }
@@ -59,13 +58,6 @@ export class RoomsService {
       }
 
       room.roomCategory = roomCategory;
-    }
-
-    if (updateRoomDto.status !== undefined) {
-      if (!Object.values(RoomStatus).includes(updateRoomDto.status as RoomStatus)) {
-        throw new ConflictException(`Invalid status ${updateRoomDto.status}`);
-      }
-      room.status = updateRoomDto.status as RoomStatus;
     }
 
     return this.roomsRepository.save(room);
@@ -100,4 +92,15 @@ export class RoomsService {
     await this.roomsRepository.remove(room);
     return 'Room deleted successfully';
   }
+
+  async findAllRoomsByCategory(categoryId: number): Promise<Room[]> {
+    return this.roomsRepository.find({
+      where: {
+        roomCategory: { id: categoryId },
+        // status: status, // Ensure status matches the type defined in RoomStatus enum
+      },
+      relations: ['roomCategory'], // Include this if you need category details as well
+    });
+ 
+  }  
 }

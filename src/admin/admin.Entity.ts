@@ -20,4 +20,10 @@ export class Admin {
     @Column({nullable:false})
     password: string;
 
+    @Column({ type: 'varchar', nullable: true })
+    resetToken?: string;
+
+    @Column({ type: 'timestamp', nullable: true })
+    resetTokenExpiry?: Date;
+
 }
