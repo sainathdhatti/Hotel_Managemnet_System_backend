@@ -25,15 +25,21 @@ export class SpaAuthService {
         if (!passwordsMatch) {
           throw new UnauthorizedException('Invalid Password');
         }
-        console.log(staffmember.staffcategory.category);
-        
-        const isSpaStaff = staffmember.staffcategory.category==="SpaStaff"
-        console.log(isSpaStaff)
-        if (!isSpaStaff) {
-            throw new ForbiddenException('Access restricted to spa staff only');
-        }
-        // Check if staffcategory and category exist
-        console.log(staffmember)
+<<<<<<// Log the staff category to debug
+console.log(staffmember.staffcategory.category);
+
+// Check if the staff member's category is "SpaStaff"
+const isSpaStaff = staffmember.staffcategory.category === "SpaStaff";
+console.log(isSpaStaff); // Log the result of the check
+
+// If the staff member is not SpaStaff, throw a ForbiddenException
+if (!isSpaStaff) {
+    throw new ForbiddenException('Access restricted to spa staff only');
+}
+
+// Optional: Log the entire staffmember object for additional debugging
+console.log(staffmember);
+
 
         const payload = { id: staffmember.id, email: staffmember.email, staffcategory: staffmember.staffcategory };
         return {
