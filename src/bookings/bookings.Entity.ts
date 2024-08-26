@@ -33,16 +33,22 @@ export class Booking {
   billPicUrl?: string;
 
   @Column()
-  noOfDays:number
+  noOfDays: number;
 
   @Column()
-  TotalAmount:number
+  noOfAdults:number;
 
-  @ManyToOne(() => UserEntity, (user) => user.bookings)
-  user: UserEntity;
+  @Column()
+  noOfChildrens:number;
+
+  @Column()
+  TotalAmount: number;
 
   @ManyToOne(() => RoomCategories, (roomcategory) => roomcategory.roombookings)
   roomcategory: RoomCategories;
+
+  @ManyToOne(() => UserEntity, (user) => user.bookings)
+  user: UserEntity;
 
   @ManyToOne(() => Room, { eager: true })
   room: Room;
