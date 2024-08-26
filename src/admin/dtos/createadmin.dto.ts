@@ -16,6 +16,7 @@ export class CreateAdminDto {
     email: string;
  
     @IsNotEmpty()
+    @Length(10, 10, { message: 'Phone number must be exactly 10 digits long' })
     @Matches(/^\d+$/, { message: 'Phone number must contain only digits' })
     phone: string;
 

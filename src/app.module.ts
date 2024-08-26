@@ -5,47 +5,49 @@ import { MulterModule } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import * as path from 'path';
 import { MailerModule } from '@nestjs-modules/mailer';
-import { StaffCategoryModule } from './staff_category/staff_category.module';
-import { StaffCategory } from './staff_category/staff_categoryEntity';
-import { SpaServiceModule } from './spa_service/spa_service.module';
-import { SpaService } from './spa_service/spa_service.Entity';
-import { TimeSlotModule } from './time_slot/time_slot.module';
-import { TimeSlot } from './time_slot/time_slot.Entity';
-import { AdminModule } from './admin/admin.module';
-import { Admin } from './admin/admin.entity';
-import { AdminAuthModule } from './admin/admin_auth/admin_auth.module';
-import { FoodEntity } from './Food_module/Food_items/food_itm.entity';
-import { Food_itemsModule } from './Food_module/Food_items/food_itm.module';
-import { CloudinaryModule } from './cloudinary/cloudinary.module';
-import { UserEntity } from './user/user.entity';
-import { UserModule } from './user/user.module';
-import { AuthModule } from './user/Auth/CustomerAuth/Auth.module';
-import { FoodOrder } from './Food_module/Food_order/Food_order.entity';
-import { OrderItem } from './Food_module/Food_order/foodorderItem.entity';
-import { OrderModule } from './Food_module/Food_order/food_order.module';
-import { Amenities } from './amenities/amenities.entity';
-import { AmenitiesModule } from './amenities/amenities.module';
-import { Room } from './rooms/rooms.entity';
-import { RoomsModule } from './rooms/rooms.module';
-import { RoomCategories } from './room-categories/room-categories.entity';
-import { RoomCategoriesModule } from './room-categories/room-categories.module';
-import { SuperAdmin } from './super-admin/superadmin.entity';
-import { SuperAdminModule } from './super-admin/super-admin.module';
-import { SuperAdminAuthModule } from './superadminauth/superadminauth.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { BookingsModule } from './Bookings/booking.module';
-import { Booking } from './Bookings/booking.entity';
+
+// Modules
+import { StaffCategoryModule } from './staff_category/staff_category.module';
+import { SpaServiceModule } from './spa_service/spa_service.module';
+import { TimeSlotModule } from './time_slot/time_slot.module';
+import { AdminModule } from './admin/admin.module';
+import { AdminAuthModule } from './admin/admin_auth/admin_auth.module';
+import { Food_itemsModule } from './Food_module/Food_items/food_itm.module';
+import { CloudinaryModule } from './cloudinary/cloudinary.module';
+import { UserModule } from './user/user.module';
+import { AuthModule } from './user/Auth/CustomerAuth/Auth.module';
+import { OrderModule } from './Food_module/Food_order/food_order.module';
+import { AmenitiesModule } from './amenities/amenities.module';
+import { RoomsModule } from './rooms/rooms.module';
+import { RoomCategoriesModule } from './room-categories/room-categories.module';
+import { SuperAdminModule } from './super-admin/super-admin.module';
+import { SuperAdminAuthModule } from './superadminauth/superadminauth.module';
 import { StaffMembersModule } from './staff_members/staff_members.module';
-import { StaffMembers } from './staff_members/staff_membersEntity';
 import { FamilyMembersModule } from './family_members/family_members.module';
-import { FamilyMembers } from './family_members/family_membersEntity';
 import { SpaBookingModule } from './spa_booking/spa_booking.module';
-import { SpaBooking } from './spa_booking/spa_bookingEntity';
-import { SpaAuthModule } from './spa_auth/spa_auth.module';import { SpaAuthGuard } from './spa_auth/spa_authGuard';
+import { SpaAuthModule } from './spa_auth/spa_auth.module';
 import { FoodAuthModule } from './food_module/food_auth/food_auth.module';
-import { Contact_Us } from './contact_us/contact_us.Entity';
+import { BookingsModule } from './bookings/bookings.module';
+import { Booking } from './bookings/bookings.Entity';
+import { Admin } from 'typeorm';
+import { FoodEntity } from './Food_module/Food_items/food_itm.entity';
+import { FoodOrder } from './Food_module/Food_order/Food_order.entity';
+import { OrderItem } from './Food_module/Food_order/foodorderItem.entity';
+import { Amenities } from './amenities/amenities.entity';
 import { ContactUsModule } from './contact_us/contact_us.module';
+import { FamilyMembers } from './family_members/family_membersEntity';
+import { RoomCategories } from './room-categories/room-categories.entity';
+import { Room } from './rooms/rooms.entity';
+import { SpaAuthGuard } from './spa_auth/spa_authGuard';
+import { SpaBooking } from './spa_booking/spa_bookingEntity';
+import { SpaService } from './spa_service/spa_service.Entity';
+import { StaffCategory } from './staff_category/staff_categoryEntity';
+import { StaffMembers } from './staff_members/staff_membersEntity';
+import { SuperAdmin } from './super-admin/superadmin.entity';
+import { TimeSlot } from './time_slot/time_slot.Entity';
+import { UserEntity } from './user/user.entity';
 
 
 @Module({
@@ -81,10 +83,9 @@ import { ContactUsModule } from './contact_us/contact_us.module';
           FamilyMembers,
           SpaBooking,
           Booking,
-          SpaAuthGuard,
-          Contact_Us
+          SpaAuthGuard
         ],
-        synchronize:true,
+        synchronize: true, // Use with caution in production
       }),
     }),
     MulterModule.register({

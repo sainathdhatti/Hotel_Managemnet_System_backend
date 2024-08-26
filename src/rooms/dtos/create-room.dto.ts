@@ -1,5 +1,4 @@
 import { IsEnum, IsNotEmpty, IsNumber } from 'class-validator';
-import { RoomStatus } from '../rooms.entity';
 
 
 export class CreateRoomDto {
@@ -11,8 +10,4 @@ export class CreateRoomDto {
   @IsNumber()
   roomNumber: number;
 
-  @IsEnum(RoomStatus, {
-    message: 'Status must be either pending, booked, or available',
-  })
-  status: RoomStatus = RoomStatus.AVAILABLE; 
 }

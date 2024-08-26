@@ -26,8 +26,6 @@ export class SpaAuthService {
           throw new UnauthorizedException('Invalid Password');
         }
 
-console.log(staffmember.staffcategory.category);
-
 // Check if the staff member's category is "SpaStaff"
 const isSpaStaff = staffmember.staffcategory.category === "SpaStaff";
 console.log(isSpaStaff); // Log the result of the check

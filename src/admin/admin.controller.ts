@@ -1,7 +1,8 @@
-import { Body, Controller, Delete, Get, NotFoundException, Param, ParseIntPipe, Post, Patch, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Delete, Get, NotFoundException, Param, Post, Patch, } from '@nestjs/common';
 import { AdminService } from './admin.service';
 import { CreateAdminDto } from './dtos/createadmin.dto';
 import { UpdateAdminDto } from './dtos/updateadmin.dto';
+import { ForgetPasswordDto } from './dtos/forgetPasswordDto.dto';
 
 @Controller('admin')
 export class AdminController {
@@ -13,8 +14,7 @@ export class AdminController {
     }
 
     @Get(':id')
-    @UsePipes(new ValidationPipe)
-    async getAdminById(@Param('id',ParseIntPipe)id:number){
+    async getAdminById(@Param('id')id:number){
         const findAdmin=await this.adminService.getAdminById(id)
         if(!findAdmin){
             return new NotFoundException('Admin not found ')
@@ -28,8 +28,7 @@ export class AdminController {
     }
 
     @Patch(':id')
-    @UsePipes(new ValidationPipe)
-    async updateAdmin(@Param('id',ParseIntPipe)id:number, @Body()adminDetails:UpdateAdminDto){
+    async updateAdmin(@Param('id')id:number, @Body()adminDetails:UpdateAdminDto){
         const findAdmin=await this.adminService.updateAdmin(id,adminDetails)
         if(!findAdmin){
             return new NotFoundException('Admin not found ')
@@ -38,11 +37,22 @@ export class AdminController {
     }
 
     @Delete(':id')
-    async deleteAdmin(@Param('id',ParseIntPipe)id:number){
+    async deleteAdmin(@Param('id')id:number){
         const findAdmin=await this.adminService.deleteAdmin(id)
         if(!findAdmin){
             return new NotFoundException('Admin not found ')
         }
         return findAdmin 
     }
+
+    @Post('forgetPassword')
+    async forgetPasword(@Body() forgetPasswordDto:ForgetPasswordDto){
+       return this.adminService.forgetPassword(forgetPasswordDto.email);
+  }
+
+    @Post('reset-password')
+    async resetPassword(@Body() resetDto: { token: string; newPassword: string }) {
+        return this.adminService.resetPassword(resetDto.token, resetDto.newPassword);
+    }
+
 }
