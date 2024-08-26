@@ -7,6 +7,7 @@ import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 import { CreateBookingDto } from './dto/createBookindDto.dto';
 import { UpdateBookingDto } from './dto/updateBookingDto.dto';
 import { UserEntity } from 'src/user/user.entity';
+import { RoomCategories } from 'src/room-categories/room-categories.entity';
 
 @Injectable()
 export class BookingsService {
@@ -20,6 +21,9 @@ export class BookingsService {
     @InjectRepository(UserEntity)
     private usersRepository: Repository<UserEntity>,
 
+    @InjectRepository(RoomCategories)
+    private rommcRepository: Repository<RoomCategories>,
+
     private readonly cloudinaryService: CloudinaryService,
   ) {}
 
@@ -28,7 +32,8 @@ export class BookingsService {
       // Fetch room and user
       const room = await this.roomsRepository.findOne({ where: { id: createBookingDto.roomId } });
       const user = await this.usersRepository.findOne({ where: { id: createBookingDto.userId } });
-
+      const roomcategory = await this.rommcRepository.findOne({ where: { id: createBookingDto.roomcategoryId } });
+    
       if (!room) {
         throw new HttpException('Room not found', HttpStatus.NOT_FOUND);
       }
@@ -61,7 +66,8 @@ export class BookingsService {
         checkOutDate: createBookingDto.checkOutDate,
         roomNumber: room.roomNumber,
         billPicUrl: result.secure_url,
-        status:createBookingDto.status
+        status:createBookingDto.status,
+        roomcategory
       });
       room.status = RoomStatus.BOOKED;
       await this.roomsRepository.save(room);
@@ -77,7 +83,7 @@ export class BookingsService {
 
   async getAllBookings() {
     try {
-      return this.bookingsRepository.find({ relations: ['room', 'user'] });
+      return this.bookingsRepository.find({ relations: ['room', 'user','roomcategory'] });
     } catch (error) {
       throw new HttpException('Error retrieving bookings', HttpStatus.INTERNAL_SERVER_ERROR);
     }

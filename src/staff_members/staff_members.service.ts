@@ -6,7 +6,7 @@ import { createStaffMembersDto } from './dtos/createstaff_members.dto';
 import { updateStaffMembersDto } from './dtos/updatestaff_members.dto';
 import * as bcrypt from 'bcrypt';
 import { StaffCategoryService } from 'src/staff_category/staff_category.service';
-import * as bcrypt from 'bcrypt';
+
 
 @Injectable()
 export class StaffMembersService {

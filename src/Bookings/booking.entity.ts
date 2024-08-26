@@ -1,6 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
 import { Room } from 'src/rooms/rooms.entity';
 import { UserEntity } from 'src/user/user.entity';
+import { RoomCategories } from 'src/room-categories/room-categories.entity';
 
 export enum BookingStatus {
   PENDING = 'pending',
@@ -23,6 +24,10 @@ export class Booking {
 
   @ManyToOne(() => Room, (room) => room.bookings)
   room: Room;
+
+  @ManyToOne(() => RoomCategories, (room) => room.book)
+  roomcategory: RoomCategories;
+  
 
   @ManyToOne(() => UserEntity, (user) => user.bookings)
   user: UserEntity;

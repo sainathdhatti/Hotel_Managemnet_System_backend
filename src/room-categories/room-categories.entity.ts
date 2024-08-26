@@ -30,5 +30,6 @@ export class RoomCategories {
     @OneToMany(() => Room, (room) => room.roomCategory)
     rooms: Room[];
     
-
+@OneToMany(() => Room, (room) => room.roomCategory)
+  book: Room[];
 }

@@ -44,6 +44,8 @@ import { SpaBookingModule } from './spa_booking/spa_booking.module';
 import { SpaBooking } from './spa_booking/spa_bookingEntity';
 import { SpaAuthModule } from './spa_auth/spa_auth.module';import { SpaAuthGuard } from './spa_auth/spa_authGuard';
 import { FoodAuthModule } from './food_module/food_auth/food_auth.module';
+import { Contact_Us } from './contact_us/contact_us.Entity';
+import { ContactUsModule } from './contact_us/contact_us.module';
 
 
 @Module({
@@ -79,7 +81,8 @@ import { FoodAuthModule } from './food_module/food_auth/food_auth.module';
           FamilyMembers,
           SpaBooking,
           Booking,
-          SpaAuthGuard
+          SpaAuthGuard,
+          Contact_Us
         ],
         synchronize:true,
       }),
@@ -128,6 +131,7 @@ import { FoodAuthModule } from './food_module/food_auth/food_auth.module';
     FamilyMembersModule,
     SpaBookingModule,
     FoodAuthModule,
+    ContactUsModule
   ],
   controllers: [AppController],
   providers: [AppService],

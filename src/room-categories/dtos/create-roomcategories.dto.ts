@@ -21,12 +21,13 @@ export class CreateRoomCategoryDto {
   @IsOptional()
   description?: string;
 
-  // @IsString()
-  // @IsOptional()
-  // imageUrl?: string;
+  @IsString()
+  @IsOptional()
+  imageUrl?: string;
 
   @IsArray()
   @ArrayNotEmpty()
+  @IsOptional()
   @IsInt({ each: true })
   amenitiesIds: number[];
 }

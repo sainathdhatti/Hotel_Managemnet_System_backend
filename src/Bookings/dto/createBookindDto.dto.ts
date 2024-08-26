@@ -1,5 +1,6 @@
 import { IsNotEmpty, IsNumber, IsDateString, IsOptional, IsString } from "class-validator";
 import { BookingStatus } from "../booking.entity";
+import { RoomCategories } from "src/room-categories/room-categories.entity";
 
 export class CreateBookingDto {
   @IsNotEmpty()
@@ -19,6 +20,9 @@ export class CreateBookingDto {
   @IsOptional()
   @IsString()
   billPicUrl?: string;
+
+  @IsNotEmpty()
+  roomcategoryId:number
 
   @IsOptional()
   status:BookingStatus
