@@ -20,17 +20,14 @@ export class RoomCategoriesController {
   constructor(private readonly roomCategoriesService: RoomCategoriesService) {}
 
   @Post()
-  @UseInterceptors(FileInterceptor('image'))
   async createRoomCategory(
     @Body() createRoomCategoryDto: CreateRoomCategoryDto,
-    @UploadedFile() image: Express.Multer.File,
   ) {
-    return this.roomCategoriesService.createRoomCategory(
+    return await this.roomCategoriesService.createRoomCategory(
       createRoomCategoryDto,
-      image,
     );
   }
- // @UseGuards(SuperAdminAuthGuard)
+  // @UseGuards(SuperAdminAuthGuard)
   @Get()
   async findAllRoomCategories() {
     return this.roomCategoriesService.findAllRoomCategories();
@@ -42,16 +39,13 @@ export class RoomCategoriesController {
   }
 
   @Put(':id')
-  @UseInterceptors(FileInterceptor('image'))
   async update(
     @Param('id') id: number,
     @Body() updateRoomCategoryDto: UpdateRoomCategoryDto,
-    @UploadedFile() image: Express.Multer.File,
   ) {
     return this.roomCategoriesService.updateRoomCategory(
       id,
       updateRoomCategoryDto,
-      image,
     );
   }
 

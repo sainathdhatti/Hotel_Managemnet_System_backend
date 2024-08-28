@@ -11,7 +11,10 @@ export class Contact_Us{
     @Column()
     lastName:string;
 
-    @Column({unique:true})
+    @Column()
+    phone:string
+
+    @Column()
     Email:string;
 
     @Column()

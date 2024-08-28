@@ -19,6 +19,7 @@ export class ContactUsService {
     }
 
     async createContact(contact:createContact_Us_Dto){
+        console.log(contact)
         return await this.contactRepo.save(contact)
     }
 

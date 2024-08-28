@@ -15,6 +15,10 @@ export class createContact_Us_Dto{
 
     @IsNotEmpty()
     @IsString()
+    phone:string
+
+    @IsNotEmpty()
+    @IsString()
     Subject:string
 
     @IsNotEmpty()
