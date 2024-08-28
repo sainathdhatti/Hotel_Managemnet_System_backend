@@ -7,7 +7,7 @@ export class CreateBookingDto {
   @IsNotEmpty()
   userId: number;
 
-  @IsInt()
+  @IsInt()  
   @IsNotEmpty()
   categoryId: number;
 
@@ -18,6 +18,13 @@ export class CreateBookingDto {
   @IsDate()
   @IsNotEmpty()
   checkOutDate: Date;
+
+  @IsNotEmpty()
+  noOfAdults: number;
+
+  @IsNotEmpty()
+  noOfChildren: number;
+
 
   @IsEnum(BookingStatus)
   @IsOptional()

@@ -14,8 +14,6 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { RoomCategoriesService } from './room-categories.service';
 import { CreateRoomCategoryDto } from './dtos/create-roomcategories.dto';
 import { UpdateRoomCategoryDto } from './dtos/update-roomcategories.dto';
-import { RoomCategories } from './room-categories.entity';
-import { SuperAdminAuthGuard } from 'src/superadminauth/superadminauth.gaurd';
 
 @Controller('room-categories')
 export class RoomCategoriesController {

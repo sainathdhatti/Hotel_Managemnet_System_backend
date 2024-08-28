@@ -17,18 +17,18 @@ export class UserController {
   }
 
   @Get()
-  @UseGuards(AuthGuard)
+  // @UseGuards(AuthGuard)
   async getAllUsers(){
     return this.userService.getAllUsers();
   }
   @Get(':id')
-  @UseGuards(AuthGuard)
+  // @UseGuards(AuthGuard)
   async getUser(@Param('id') id: number) {
     return this.userService.getUser(id);
   }
 
   @Put(':id')
-  @UseGuards(AuthGuard)
+  // @UseGuards(AuthGuard)
   async updateUser(@Param('id') id: number, @Body() updateUserDto: UpdateUserDto) {
     return this.userService.updateUser(id, updateUserDto);
   }

@@ -38,6 +38,12 @@ export class Booking {
   @Column()
   TotalAmount:number
 
+  @Column()
+  noOfAdults: number;
+
+  @Column()
+  noOfChildren: number;
+
   @ManyToOne(() => UserEntity, (user) => user.bookings)
   user: UserEntity;
 
