@@ -36,10 +36,10 @@ export class Booking {
   noOfDays: number;
 
   @Column()
-  noOfAdults:number;
+  noOfAdults: number;
 
   @Column()
-  noOfChildrens:number;
+  noOfChildren: number; // Fixed the spelling to 'noOfChildren'
 
   @Column()
   TotalAmount: number;

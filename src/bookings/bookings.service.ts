@@ -43,66 +43,66 @@ export class BookingsService {
         return bookings;
     }
     
-    async createBooking(createBooking:CreateBookingDto){
-        const{userId,categoryId,checkInDate,checkOutDate}=createBooking
-        const finduser=await this.userService.getUser(userId)
-        const findcategory=await this.roomcategoryService.findOneRoomCategory(categoryId)
-        if(!finduser || !findcategory){
-            throw new NotFoundException('user or category not found')
-        }
+  //   async createBooking(createBooking:CreateBookingDto){
+  //       const{userId,categoryId,checkInDate,checkOutDate}=createBooking
+  //       const finduser=await this.userService.getUser(userId)
+  //       const findcategory=await this.roomcategoryService.findOneRoomCategory(categoryId)
+  //       if(!finduser || !findcategory){
+  //           throw new NotFoundException('user or category not found')
+  //       }
 
-        // Validate check-in and check-out dates
-    const now = new Date();
-    const checkIn = new Date(checkInDate);
-    const checkOut = new Date(checkOutDate);
+  //       // Validate check-in and check-out dates
+  //   const now = new Date();
+  //   const checkIn = new Date(checkInDate);
+  //   const checkOut = new Date(checkOutDate);
 
-    if (checkIn < now) {
-      throw new BadRequestException('Check-in date must be greater than or equal to the current date');
-    }
+  //   if (checkIn < now) {
+  //     throw new BadRequestException('Check-in date must be greater than or equal to the current date');
+  //   }
 
-    if (checkOut <= checkIn) {
-      throw new BadRequestException('Check-out date must be after the check-in date');
-    }
+  //   if (checkOut <= checkIn) {
+  //     throw new BadRequestException('Check-out date must be after the check-in date');
+  //   }
 
-    const overlappingBooking = await this.bookingsRepo.createQueryBuilder('booking')
-      .where('booking.user.id = :userId', { userId })
-      .andWhere('booking.checkInDate < :checkOutDate', { checkOutDate })
-      .andWhere('booking.checkOutDate > :checkInDate', { checkInDate })
-      .getOne();
+  //   const overlappingBooking = await this.bookingsRepo.createQueryBuilder('booking')
+  //     .where('booking.user.id = :userId', { userId })
+  //     .andWhere('booking.checkInDate < :checkOutDate', { checkOutDate })
+  //     .andWhere('booking.checkOutDate > :checkInDate', { checkInDate })
+  //     .getOne();
 
-    if (overlappingBooking) {
-      throw new ConflictException('User already has a booking for the selected dates');
-    }
+  //   if (overlappingBooking) {
+  //     throw new ConflictException('User already has a booking for the selected dates');
+  //   }
 
-        const rooms = await this.roomService.findAllRoomsByCategory(categoryId) 
-        console.log(rooms)
+  //       const rooms = await this.roomService.findAllRoomsByCategory(categoryId) 
+  //       // console.log(rooms)
 
-        const availableRooms = await this.filterAvailableRooms(rooms, checkInDate, checkOutDate);
-        console.log(availableRooms)
+  //       const availableRooms = await this.filterAvailableRooms(rooms, checkInDate, checkOutDate);
+  //       // console.log(availableRooms)
 
-    if (availableRooms.length === 0) {
-      throw new ConflictException('No available rooms for the selected dates');
-    }
+  //   if (availableRooms.length === 0) {
+  //     throw new ConflictException('No available rooms for the selected dates');
+  //   }
 
-    // Example: Booking the first available room (you can choose based on your logic)
-    const roomToBook = availableRooms[0];
-    const numberOfNights = Math.ceil((checkOut.getTime() - checkIn.getTime()) / (1000 * 60 * 60 * 24));
-    const totalPrice = findcategory.price * numberOfNights;
+  //   // Example: Booking the first available room (you can choose based on your logic)
+  //   const roomToBook = availableRooms[0];
+  //   const numberOfNights = Math.ceil((checkOut.getTime() - checkIn.getTime()) / (1000 * 60 * 60 * 24));
+  //   const totalPrice = findcategory.price * numberOfNights;
 
-    // Create and save the booking
-    const booking = new Booking();
-    booking.user = finduser;
-    booking.room = roomToBook;
-    booking.roomcategory=findcategory
-    booking.checkInDate = checkInDate;
-    booking.checkOutDate = checkOutDate;
-    booking.status=BookingStatus.BOOKED
-    booking.noOfDays=numberOfNights
-    booking.TotalAmount=totalPrice
-    findcategory.room.status=RoomStatus.BOOKED
+  //   // Create and save the booking
+  //   const booking = new Booking();
+  //   booking.user = finduser;
+  //   booking.room = roomToBook;
+  //   booking.roomcategory=findcategory
+  //   booking.checkInDate = checkInDate;
+  //   booking.checkOutDate = checkOutDate;
+  //   booking.status=BookingStatus.BOOKED
+  //   booking.noOfDays=numberOfNights
+  //   booking.TotalAmount=totalPrice
+  //   findcategory.room.status=RoomStatus.BOOKED
 
-    return this.bookingsRepo.save(booking);
-  }
+  //   return this.bookingsRepo.save(booking);
+  // }
 
   private async filterAvailableRooms(rooms: Room[], checkInDate: Date, checkOutDate: Date): Promise<Room[]> {
     const availableRooms = [];
@@ -126,6 +126,65 @@ export class BookingsService {
 
     return conflictingBookings.length === 0;
   }
+  async createBooking(createBooking: CreateBookingDto) {
+    const { userId, categoryId, checkInDate, checkOutDate, noOfAdults, noOfChildren } = createBooking;
+  
+    const finduser = await this.userService.getUser(userId);
+    const findcategory = await this.roomcategoryService.findOneRoomCategory(categoryId);
+  
+    if (!finduser || !findcategory) {
+      throw new NotFoundException('User or category not found');
+    }
+  
+    const now = new Date();
+    const checkIn = new Date(checkInDate);
+    const checkOut = new Date(checkOutDate);
+  
+    if (checkIn < now) {
+      throw new BadRequestException('Check-in date must be greater than or equal to the current date');
+    }
+  
+    if (checkOut <= checkIn) {
+      throw new BadRequestException('Check-out date must be after the check-in date');
+    }
+  
+    const overlappingBooking = await this.bookingsRepo.createQueryBuilder('booking')
+      .where('booking.user.id = :userId', { userId })
+      .andWhere('booking.checkInDate < :checkOutDate', { checkOutDate })
+      .andWhere('booking.checkOutDate > :checkInDate', { checkInDate })
+      .getOne();
+  
+    if (overlappingBooking) {
+      throw new ConflictException('User already has a booking for the selected dates');
+    }
+
+  
+    const rooms = await this.roomService.findAllRoomsByCategory(categoryId);
+    const availableRooms = await this.filterAvailableRooms(rooms, checkInDate, checkOutDate);
+  
+    if (availableRooms.length === 0) {
+      throw new ConflictException('No available rooms for the selected dates');
+    }
+  
+    const roomToBook = availableRooms[0];
+    const numberOfNights = Math.ceil((checkOut.getTime() - checkIn.getTime()) / (1000 * 60 * 60 * 24));
+    const totalPrice = findcategory.price * numberOfNights;
+  
+    const booking = new Booking();
+    booking.noOfAdults=noOfAdults;
+    booking.noOfChildren=noOfChildren;
+    booking.user = finduser;
+    booking.room = roomToBook;
+    booking.roomcategory = findcategory;
+    booking.checkInDate = checkInDate;
+    booking.checkOutDate = checkOutDate;
+    booking.status = BookingStatus.BOOKED;
+    booking.noOfDays = numberOfNights;
+    booking.TotalAmount = totalPrice;
+    booking.room.status=RoomStatus.BOOKED
+    return this.bookingsRepo.save(booking);
+  }
+  
 
 
   async updateBooking(id: number, updateBooking: UpdateBookingDto) {
