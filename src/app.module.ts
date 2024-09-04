@@ -25,19 +25,17 @@ import { RoomCategoriesModule } from './room-categories/room-categories.module';
 import { SuperAdminModule } from './super-admin/super-admin.module';
 import { SuperAdminAuthModule } from './superadminauth/superadminauth.module';
 import { StaffMembersModule } from './staff_members/staff_members.module';
-import { FamilyMembersModule } from './family_members/family_members.module';
 import { SpaBookingModule } from './spa_booking/spa_booking.module';
 import { SpaAuthModule } from './spa_auth/spa_auth.module';
 import { FoodAuthModule } from './food_module/food_auth/food_auth.module';
 import { BookingsModule } from './bookings/bookings.module';
 import { Booking } from './bookings/bookings.Entity';
-import { Admin } from 'typeorm';
+import { Admin } from './admin/admin.entity';
 import { FoodEntity } from './Food_module/Food_items/food_itm.entity';
 import { FoodOrder } from './Food_module/Food_order/Food_order.entity';
 import { OrderItem } from './Food_module/Food_order/foodorderItem.entity';
 import { Amenities } from './amenities/amenities.entity';
 import { ContactUsModule } from './contact_us/contact_us.module';
-import { FamilyMembers } from './family_members/family_membersEntity';
 import { RoomCategories } from './room-categories/room-categories.entity';
 import { Room } from './rooms/rooms.entity';
 import { SpaAuthGuard } from './spa_auth/spa_authGuard';
@@ -48,6 +46,7 @@ import { StaffMembers } from './staff_members/staff_membersEntity';
 import { SuperAdmin } from './super-admin/superadmin.entity';
 import { TimeSlot } from './time_slot/time_slot.Entity';
 import { UserEntity } from './user/user.entity';
+import { Contact_Us } from './contact_us/contact_us.Entity';
 
 
 @Module({
@@ -80,10 +79,10 @@ import { UserEntity } from './user/user.entity';
           StaffMembers,
           SpaService,
           TimeSlot,
-          FamilyMembers,
           SpaBooking,
           Booking,
-          SpaAuthGuard
+          SpaAuthGuard,
+          Contact_Us
         ],
         synchronize: true, // Use with caution in production
       }),
@@ -129,7 +128,6 @@ import { UserEntity } from './user/user.entity';
     StaffCategoryModule,
     BookingsModule,
     StaffMembersModule,
-    FamilyMembersModule,
     SpaBookingModule,
     FoodAuthModule,
     ContactUsModule

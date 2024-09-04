@@ -1,8 +1,6 @@
 import { Controller, Get, NotFoundException, Param, ParseIntPipe, UsePipes, ValidationPipe, Body, Post, Patch, Delete } from '@nestjs/common';
 import { SpaBookingService } from './spa_booking.service';
 import { CreateSpaBookingDto } from './dtos/createspa_booking.dto';
-import { updateSpaBookingDto } from './dtos/updatespa_booking.dto';
-import { updateFamily_MemberDto } from 'src/family_members/dtos/updatefamily_members.dto';
 import { updateSpaBookingBySpaDto } from './dtos/updatespa_bookingByStaff.dto';
 
 @Controller('spa_bookings')
@@ -30,34 +28,18 @@ export class SpaBookingController {
         return await this.spabookingService.getBookingsByCustomerId(userId);
     }
 
-    @Get('users/:userId/family-members/:familymemberId')
-    @UsePipes(new ValidationPipe())
-    async getBookingByFamilyMember(
-    @Param('familymemberId', ParseIntPipe) familymemberId: number,
-    @Param('userId', ParseIntPipe) userId: number ) {
-    return await this.spabookingService.getBookingByFamilyMember(userId,familymemberId);
-  }
-
     @Post()
     async createSpaBooking(@Body() createBooking:CreateSpaBookingDto){
           return await this.spabookingService.createSpaBooking(createBooking)
     }
 
-    @Patch('users/:userId/family-members/:familymemberId')
-    async updateBookingByFamilyMember(
-        @Param('userId', ParseIntPipe) userId: number,
-        @Param('familymemberId', ParseIntPipe) familymemberId: number, @Body() updateSpaDetails:updateSpaBookingDto){
-        return await this.spabookingService.updateBookingByFamilyMember(userId,familymemberId,updateSpaDetails)
+    @Patch(':id')
+    async updateSpaBookingById(@Param('id', ParseIntPipe) id: number, @Body() updateSpaDetails: updateSpaBookingBySpaDto) {
+      return await this.spabookingService.updateSpaBookingById(id, updateSpaDetails);
     }
 
-    @Patch('family-members/:familymemberId')
-    async updateBookingStatus(@Param('familymemberId',ParseIntPipe)familymemberId:number,@Body() updateStatus:updateSpaBookingBySpaDto){
-          return await this.spabookingService.updateBookingStatus(familymemberId,updateStatus)
-    }
-
-    @Delete('users/:userId/family-members/:familymemberId')
-    async deleteBooking(@Param('userId', ParseIntPipe) userId: number,
-    @Param('familymemberId', ParseIntPipe) familymemberId: number){
-        return await this.spabookingService.deleteBooking(userId,familymemberId)
+    @Delete(':id')
+    async deleteSpaBooking(@Param('id',ParseIntPipe)id:number){
+        return await this.spabookingService.deleteSpaBooking(id)
     }
 }

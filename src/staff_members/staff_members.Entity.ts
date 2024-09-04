@@ -1,6 +1,9 @@
 import { StaffCategory } from "src/staff_category/staff_categoryEntity";
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
-
+export enum Gender {
+  MALE = 'male',
+  FEMALE = 'female',
+}
 @Entity("spa_members")
 export class Staff_Members {
   @PrimaryGeneratedColumn()
@@ -24,8 +27,12 @@ export class Staff_Members {
   @Column({ length: 10, unique: true })
   phoneNumber: string;
 
-  @Column()
-  gender:string;
+  @Column({
+    type: 'enum',
+    enum: Gender,
+    default: Gender.MALE,
+  })
+  gender: string;
    
   @ManyToOne(() => StaffCategory, (staffcategory) => staffcategory.staffmembers)
   staffcategory: StaffCategory;
