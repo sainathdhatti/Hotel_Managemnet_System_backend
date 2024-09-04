@@ -39,7 +39,7 @@ export class Booking {
   noOfAdults: number;
 
   @Column()
-  noOfChildren: number; // Fixed the spelling to 'noOfChildren'
+  noOfChildrens: number; // Fixed the spelling to 'noOfChildren'
 
   @Column()
   TotalAmount: number;

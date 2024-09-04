@@ -1,7 +1,8 @@
-import { IsOptional } from "class-validator";
+import { IsEnum, IsOptional } from "class-validator";
+import { BookingStatus } from "../spa_bookingEntity";
 
 export class updateSpaBookingBySpaDto{    
+    @IsEnum(BookingStatus)
     @IsOptional()
-    status:string
-
+    status:BookingStatus
 }

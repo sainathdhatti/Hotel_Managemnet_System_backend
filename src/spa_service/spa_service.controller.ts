@@ -5,9 +5,9 @@ import { UpdateSpaServiceDto } from './dtos/updatespa_service.dto';
 import { AdminAuthGuard } from 'src/admin/admin_auth/admin_authGuard';
 
 @Controller('spa-service')
-@UseGuards(AdminAuthGuard)
+//@UseGuards(AdminAuthGuard)
 export class SpaServiceController {
-    constructor(private readonly spaServiceService: SpaServiceService) {}
+    constructor(private readonly spaServiceService:  SpaServiceService) {}
 
 
   @Get()

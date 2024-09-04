@@ -13,4 +13,7 @@ export class UpdateSpaServiceDto {
   @IsNumber()
   @IsPositive()
   price?: number;
+
+  @IsOptional()
+  service_image:string
 }
