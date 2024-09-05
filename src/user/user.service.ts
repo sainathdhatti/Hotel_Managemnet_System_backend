@@ -133,7 +133,7 @@ export class UserService {
     await this.userRepository.save(user);
 
     // Create a password reset URL
-    const resetUrl = `http://yourfrontend.com/reset-password?token=${token}`;
+    const resetUrl = `http://localhost:3000/resetpassword?token=${token}`;
 
     // Send the password reset email
     await this.mailerService.sendMail({

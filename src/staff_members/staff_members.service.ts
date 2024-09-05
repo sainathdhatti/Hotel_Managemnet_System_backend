@@ -39,6 +39,7 @@ export class StaffMembersService {
     }
 
     async createStaffMember(staffmemberDetails: createStaffMembersDto) {
+        const staff_category=await this.staffCategoryService.getStaffCategoryById(+staffmemberDetails.staffcategory)
         const staffmember=new StaffMembers()
         staffmember.firstName=staffmemberDetails.firstName;
         staffmember.lastName=staffmemberDetails.lastName
@@ -46,7 +47,7 @@ export class StaffMembersService {
         staffmember.email=staffmemberDetails.email
 
         staffmember.gender=staffmemberDetails.gender;
-        staffmember.staffcategory=staffmemberDetails.staffcategory
+        staffmember.staffcategory=staff_category
         const hashpassword=await bcrypt.hash(staffmemberDetails.password,10)
         staffmember.password=hashpassword
 

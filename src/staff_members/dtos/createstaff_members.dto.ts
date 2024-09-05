@@ -30,6 +30,6 @@ export class createStaffMembersDto{
     password:string
 
     @IsNotEmpty()
-    staffcategory:StaffCategory
+    staffcategory:number
 
 }

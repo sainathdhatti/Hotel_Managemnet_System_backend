@@ -410,16 +410,42 @@ export class BookingsService {
       relations: ['room', 'roomcategory', 'user'] // Ensure relations are included in the final result
     });
   }
+async deleteBooking(bookingId: number): Promise<Booking> {
+  // Retrieve the booking, including related entities
+  const booking = await this.bookingsRepo.findOne({
+    where: { bookingId },
+    relations: ['room', 'roomcategory', 'user'],
+  });
 
-  async deleteBooking(bookingId: number) {
-    const booking = await this.bookingsRepo.findOne({
-      where: { bookingId },
-      relations: ['room', 'roomcategory', 'user'],
-    });
+  if (!booking) {
+    throw new NotFoundException('Booking not found');
+  }
 
-    if (!booking) {
-      throw new NotFoundException('Booking not found');
-    }
+  // Get current date and time
+  const now = new Date();
+
+  // Calculate the time difference between now and the booking check-in date
+  const checkInDate = new Date(booking.checkInDate);
+  const timeDifference = checkInDate.getTime() - now.getTime();
+  const hoursDifference = timeDifference / (1000 * 60 * 60);
+
+  if (hoursDifference <= 48) {
+    throw new BadRequestException('You can only cancel the booking before 48 hours of check-in time');
+  }
+
+  // Update the booking status to canceled
+  booking.status = BookingStatus.CANCELLED;
+  await this.bookingsRepo.save(booking);
+
+  // Optionally, update the room status to available if needed
+  if (booking.room) {
+    booking.room.status = RoomStatus.AVAILABLE;
+    await this.roomRepo.save(booking.room); // Assuming there's a repository for rooms
+  }
+
+  return booking;
+}
+
 
     // Get current date and time
     const now = new Date(); 
