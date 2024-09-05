@@ -209,7 +209,7 @@ async deleteBooking(bookingId:number){
       const hoursDifference = timeDifference / (1000 * 60 * 60);
   
       if (hoursDifference <= 48) {
-        throw new BadRequestException('You can only cancel the booking more than 48 hours before the check-in time');
+        throw new BadRequestException('You can only cancel the booking before 48 hours of check-in time');
       }
   
       // Update the booking status to canceled or delete the booking

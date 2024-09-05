@@ -31,7 +31,6 @@ import { SpaAuthModule } from './spa_auth/spa_auth.module';
 import { FoodAuthModule } from './food_module/food_auth/food_auth.module';
 import { BookingsModule } from './bookings/bookings.module';
 import { Booking } from './bookings/bookings.Entity';
-import { Admin } from 'typeorm';
 import { FoodEntity } from './Food_module/Food_items/food_itm.entity';
 import { FoodOrder } from './Food_module/Food_order/Food_order.entity';
 import { OrderItem } from './Food_module/Food_order/foodorderItem.entity';
@@ -48,6 +47,8 @@ import { StaffMembers } from './staff_members/staff_membersEntity';
 import { SuperAdmin } from './super-admin/superadmin.entity';
 import { TimeSlot } from './time_slot/time_slot.Entity';
 import { UserEntity } from './user/user.entity';
+import { Admin } from './admin/admin.entity';
+import { Contact_Us } from './contact_us/contact_us.Entity';
 
 
 @Module({
@@ -83,7 +84,8 @@ import { UserEntity } from './user/user.entity';
           FamilyMembers,
           SpaBooking,
           Booking,
-          SpaAuthGuard
+          SpaAuthGuard,
+          Contact_Us
         ],
         synchronize: true, // Use with caution in production
       }),

@@ -52,9 +52,11 @@ export class OrderService {
       orderItem.price = foodItem.food_price * itemDto.quantity;
       orderItem.foodItem = foodItem;
       orderItem.order = order;
+      orderItem.food_name=foodItem.food_name
 
       order.orderItems.push(orderItem);
       totalPrice += orderItem.price;
+      this.logger.log('totalamount:', totalPrice);
 
       this.logger.log('Added item to order:', orderItem);
     }
@@ -74,9 +76,7 @@ export class OrderService {
     const orders = await this.orderRepository.find({ relations: ['orderItems', 'user'] });
     this.logger.log('Orders retrieved:', JSON.stringify(orders));
 
-    return orders.map((order) =>
-      plainToClass(FoodOrder, order, { excludeExtraneousValues: true }),
-    );
+    return orders.map(order => this.formatOrderResponse(order));
   }
 
   async getOrderById(id: number){
@@ -162,6 +162,30 @@ export class OrderService {
     const updatedOrder = await this.orderRepository.save(order);
     this.logger.log('Order updated:', JSON.stringify(updatedOrder));
     return plainToClass(FoodOrder, updatedOrder, { excludeExtraneousValues: true });
+  }
+
+  private formatOrderResponse(order: FoodOrder) {
+    return {
+      id: order.order_id,
+      totalAmount: order.totalAmount.toString(), // Ensure totalAmount is a string
+      order_time: order.order_time.toISOString(), // ISO string format
+      delivered_time: order.delivered_time ? order.delivered_time.toISOString() : null,
+      status: order.status,
+      orderItems: order.orderItems.map(item => ({
+        id: item.id,
+        foodItemId: item.foodItemId,
+        quantity: item.quantity,
+        price: item.price.toString(), 
+        food_name:item.food_name
+      })),
+      user: {
+        id: order.user.id,
+        email: order.user.email,
+        firstName: order.user.firstName,
+        lastName: order.user.lastName,
+        phoneNumber: order.user.phoneNumber,
+      },
+    };
   }
   
 }
