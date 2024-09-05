@@ -47,5 +47,10 @@ export class StaffCategoryController {
         return findstaffCategory
     }
 
+    @Get(':name')
+    async getStaffCategoryByName(@Param('name')name:string){
+        return await this.staffCategoryService.getStaffCategoryByName(name)
+    }
+
 }
 

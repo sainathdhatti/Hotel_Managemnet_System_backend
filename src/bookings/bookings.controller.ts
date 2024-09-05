@@ -38,6 +38,7 @@ export class BookingsController {
   @Get('users/:userid')
   @UsePipes(new ValidationPipe())
   async getBookingByCustomerId(@Param('userid', ParseIntPipe) userid: number) {
+    console.log("hello World");
   try {
     return await this.bookingsService.getBookingCustomerById(userid);
   } catch (error) {

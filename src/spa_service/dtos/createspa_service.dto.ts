@@ -13,4 +13,7 @@ export class CreateSpaServiceDto {
   @IsNumber()
   @IsPositive()
   price: number;
+
+  @IsNotEmpty()
+  service_image:string;
 }

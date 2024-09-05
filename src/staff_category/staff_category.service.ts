@@ -36,4 +36,11 @@ export class StaffCategoryService {
         } 
     }
 
+    async getStaffCategoryByName(name:string){
+        const findstaffCategory=await this.staffCategoyRepo.findOne({
+            where:{category:name}
+        })
+        return findstaffCategory
+    }
+
 }

@@ -15,6 +15,9 @@ export class SpaService {
   @Column({ type: 'decimal', precision: 10, scale: 2 })
   price: number;
 
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  service_image: string;
+
   @OneToMany(()=>SpaBooking,(spabooking)=>spabooking.spaservice)
   spabookings:SpaBooking[]
 

@@ -5,7 +5,7 @@ import { UpdateTimeSlotDto } from './dtos/updatetime_slot.dto';
 import { AdminAuthGuard } from 'src/admin/admin_auth/admin_authGuard';
 
 @Controller('time-slot')
-@UseGuards(AdminAuthGuard)
+// @UseGuards(AdminAuthGuard)
 export class TimeSlotController {
     constructor(private readonly timeSlotService: TimeSlotService) {}
 

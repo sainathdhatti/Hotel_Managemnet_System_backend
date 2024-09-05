@@ -27,6 +27,17 @@ export class StaffMembersService {
         return findstaffmember
     }
 
+    async getStaffMemberByCategory(category:string){
+        const findstaffCategory=await this.staffCategoryService.getStaffCategoryByName(category)
+        if(!findstaffCategory){
+            throw new Error(`Category "${category}" not found`);
+        }
+        return await this.staffmemberRepo.find({
+            where:{staffcategory:findstaffCategory},
+            relations:['staffcategory']
+        })
+    }
+
     async createStaffMember(staffmemberDetails: createStaffMembersDto) {
         const staff_category=await this.staffCategoryService.getStaffCategoryById(+staffmemberDetails.staffcategory)
         const staffmember=new StaffMembers()
