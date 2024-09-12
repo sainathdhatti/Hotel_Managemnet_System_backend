@@ -14,6 +14,7 @@ export enum BookingStatus {
   CANCELLED = 'CANCELLED',
 }
 
+
 @Entity('bookings')
 export class Booking {
   @PrimaryGeneratedColumn()
@@ -29,6 +30,7 @@ export class Booking {
     type: 'enum',
     enum: BookingStatus,
     default: BookingStatus.AVAILABLE,
+    nullable: false,
   })
   status: BookingStatus;
 

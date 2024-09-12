@@ -12,17 +12,20 @@ export class OrderItem {
   foodItemId: number; 
 
   @Column()
+  food_name:string
+
+  @Column()
   quantity: number;
 
   @Column('decimal')
   price: number;
 
-  @ManyToOne(() => FoodOrder, (order) => order.orderItems)
+  @ManyToOne(() => FoodOrder, (order) => order.orderItems,{ onDelete:'SET NULL' })
   @Type(() => FoodOrder)
   @Exclude({ toPlainOnly: true }) 
   order: FoodOrder;
 
-  @ManyToOne(() => FoodEntity, (foodItem) => foodItem.food_id)
+  @ManyToOne(() => FoodEntity, (foodItem) => foodItem.food_id,{ onDelete:'SET NULL' })
   @Type(() => FoodEntity)
   @Exclude({ toPlainOnly: true }) 
   foodItem: FoodEntity;
