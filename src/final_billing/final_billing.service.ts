@@ -30,7 +30,7 @@ export class FinalBillingService {
       }
 
 
-      if(bookedBookings[0].status!=BookingStatus.CHECKED_OUT){
+      if(bookedBookings[0].status!=BookingStatus.BOOKED){
         throw new NotFoundException('Bill will get generated only after checkout');
       }
       let totalSpaAmount = 0;
