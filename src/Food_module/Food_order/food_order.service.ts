@@ -8,6 +8,7 @@ import { CreateOrderDto } from './dto/createFoodOrderDto.dto';
 import { plainToClass } from 'class-transformer';
 import { UserEntity } from 'src/user/user.entity';
 import { OrderStatus, UpdateOrderDto } from './dto/updateFoodOrderDto.dto';
+import { BookingsService } from 'src/bookings/bookings.service';
 
 @Injectable()
 export class OrderService {
@@ -22,13 +23,21 @@ export class OrderService {
     private readonly foodItemRepository: Repository<FoodEntity>,
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
+    private readonly bookingService: BookingsService
   ) {}
 
   async createOrder(createOrderDto: CreateOrderDto) {
+    console.log("foodDetails",createOrderDto);
     const user = await this.userRepository.findOneBy({ id: createOrderDto.userId });
     if (!user) {
       this.logger.error(`User with ID ${createOrderDto.userId} not found`);
       throw new NotFoundException(`User with ID ${createOrderDto.userId} not found`);
+    }
+
+    const booking=await this.bookingService.getBookingById(createOrderDto.bookingId);
+    if(!booking){
+      this.logger.error(`Booking with ID ${createOrderDto.bookingId} not found`);
+      throw new NotFoundException(`Booking with ID ${createOrderDto.bookingId} not found`);
     }
 
     this.logger.log('User found:', user);
@@ -55,6 +64,7 @@ export class OrderService {
 
       order.orderItems.push(orderItem);
       totalPrice += orderItem.price;
+      order.booking=booking;
 
       this.logger.log('Added item to order:', orderItem);
     }
@@ -71,7 +81,7 @@ export class OrderService {
   }
 
   async getAllOrders() {
-    const orders = await this.orderRepository.find({ relations: ['orderItems', 'user'] });
+    const orders = await this.orderRepository.find({ relations: ['orderItems', 'user','booking'] });
     this.logger.log('Orders retrieved:', JSON.stringify(orders));
 
     return orders.map((order) =>
@@ -92,6 +102,13 @@ export class OrderService {
 
     this.logger.log('Order retrieved:', JSON.stringify(order));
     return plainToClass(FoodOrder, order, { excludeExtraneousValues: true });
+  }
+
+  async getOrderByCustomerId(userId: number) {
+    return await this.orderRepository.find({
+      where: { user: { id: userId } },
+      relations: ['orderItems', 'user'],
+    });
   }
 
   async updateOrder(id: number, updateOrderDto: UpdateOrderDto) {

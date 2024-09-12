@@ -30,7 +30,7 @@ export class AuthService {
     return {
       access_token: await this.jwtService.signAsync(result),
       userId: result.id,
-      name:result.firstName
+      userName:result.firstName
     };
   }
   logout() {

@@ -23,7 +23,7 @@ export class CreateBookingDto {
   noOfAdults: number;
 
   @IsNotEmpty()
-  noOfChildren: number;
+  noOfChildrens: number;
 
 
   @IsEnum(BookingStatus)

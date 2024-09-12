@@ -26,4 +26,6 @@ export class OrderItem {
   @Type(() => FoodEntity)
   @Exclude({ toPlainOnly: true }) 
   foodItem: FoodEntity;
+
+  
 }
