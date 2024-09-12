@@ -80,7 +80,7 @@ export class BookingsController {
 
   @Get('users/:userId/BookingId')
   async getBookingIdOfBookedStatus(@Param("userId") userId: number) {
-    return await this.bookingsService.getBookingIdOfBookedStatus(userId);
+    return await this.bookingsService.getSpaBookingsOfBookedStatus(userId);
   }
 
   @Patch(":bookingId")
