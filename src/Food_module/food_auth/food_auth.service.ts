@@ -30,7 +30,7 @@ export class FoodAuthService {
         const isSpaStaff = staffmember.staffcategory.category==="CookStaff"
         console.log(isSpaStaff)
         if (!isSpaStaff) {
-            throw new ForbiddenException('Access restricted to spa staff only');
+            throw new ForbiddenException('Access restricted to Cook staff only');
         }
         // Check if staffcategory and category exist
         console.log(staffmember)

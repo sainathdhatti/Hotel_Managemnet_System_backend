@@ -29,8 +29,9 @@ export class AuthService {
 
     return {
       access_token: await this.jwtService.signAsync(result),
-      userId: result.id,
-      userName:result.firstName
+userId: result.id,
+userName: result.firstName
+
     };
   }
   logout() {

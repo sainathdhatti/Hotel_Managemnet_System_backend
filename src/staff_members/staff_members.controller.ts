@@ -15,8 +15,8 @@ export class StaffMembersController {
 
     @Get(':id')
     @UsePipes(new ValidationPipe())
-    async getStaffMemberById(@Param('id', ParseIntPipe) id: number){
-    const findstaffMember = await this.staffmemberService.getStaffMemberById(id);
+    async getStaffMemberById(@Param('id') id: number){
+    const findstaffMember = await this.staffmemberService.getStaffMemberById(+id);
     if (!findstaffMember) {
       throw new NotFoundException('StaffMember not found');
     }
@@ -43,7 +43,7 @@ export class StaffMembersController {
     }
 
     @Delete(':id')
-    @UseGuards(SpaAuthGuard)
+   // @UseGuards(SpaAuthGuard)
     @UsePipes(new ValidationPipe())
     async deleteStaffMember(@Param('id',ParseIntPipe)id:number){
         const findstaffmember=await this.staffmemberService.deleteStaffMember(id)
