@@ -18,6 +18,9 @@ export class SpaService {
   @Column({ type: 'varchar', length: 255, nullable: true })
   service_image: string;
 
+  @Column({default:0})
+  totalAmount:number;
+
   @OneToMany(()=>SpaBooking,(spabooking)=>spabooking.spaservice)
   spabookings:SpaBooking[]
 

@@ -7,7 +7,7 @@ import { UserModule } from 'src/user/user.module';
 import { SpaServiceModule } from 'src/spa_service/spa_service.module';
 import { TimeSlotModule } from 'src/time_slot/time_slot.module';
 import { StaffMembersModule } from 'src/staff_members/staff_members.module';
-import { Repository } from 'typeorm';
+import { BookingsModule } from 'src/bookings/bookings.module';
 
 @Module({
   imports: [
@@ -16,9 +16,10 @@ import { Repository } from 'typeorm';
     SpaServiceModule,
     TimeSlotModule,
     StaffMembersModule,
+    BookingsModule
   ],
   controllers: [SpaBookingController],
-  providers: [SpaBookingService],
+  providers: [SpaBookingService,],
   exports: [SpaBookingService],
 })
 export class SpaBookingModule {}

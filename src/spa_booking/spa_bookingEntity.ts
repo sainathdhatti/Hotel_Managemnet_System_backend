@@ -1,16 +1,19 @@
+import { Booking } from "src/bookings/bookings.Entity";
+import { FinalBilling } from "src/final_billing/final_billing.Entity";
 import { SpaService } from "src/spa_service/spa_service.Entity";
 import { StaffMembers } from "src/staff_members/staff_membersEntity";
 import { TimeSlot } from "src/time_slot/time_slot.Entity";
 import { UserEntity } from "src/user/user.entity";
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from "typeorm";
 
 export enum Gender {
     MALE = 'male',
     FEMALE = 'female',
   }
-  export enum BookingStatus {
-    PENDING = 'pending',
-    DONE = 'done',
+  export enum SpaBookingStatus {
+    PENDING = 'PENDING',
+    DONE = 'DONE',
+    CANCELLED='CANCELLED'
 }
 @Entity('spa_booking')
 export class SpaBooking{
@@ -35,10 +38,10 @@ export class SpaBooking{
 
     @Column({
         type: 'enum',
-        enum: BookingStatus,
-        default: BookingStatus.PENDING,
+        enum: SpaBookingStatus,
+        default: SpaBookingStatus.PENDING,
     })
-    status: BookingStatus;
+    status: SpaBookingStatus;
 
 
     @ManyToOne(()=>UserEntity,(user)=>user.spabookings)
@@ -52,4 +55,8 @@ export class SpaBooking{
 
     @ManyToOne(()=>StaffMembers,(staffmember)=>staffmember.spabookings)
     staffmember:StaffMembers
+
+    @ManyToOne(()=>Booking,(booking)=>booking.spabookings)
+    booking:Booking
+
 }

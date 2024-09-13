@@ -3,6 +3,8 @@ import { UserEntity } from 'src/user/user.entity';
 import { Exclude, Type } from 'class-transformer';
 import { OrderItem } from './foodorderItem.entity';
 import { OrderStatus } from './dto/updateFoodOrderDto.dto';
+import { Booking } from 'src/bookings/bookings.Entity';
+//mport { FinalBilling } from 'src/final_billing/final_billing.Entity';
 
 @Entity('food_order')
 export class FoodOrder {
@@ -29,4 +31,11 @@ export class FoodOrder {
   @Type(() => OrderItem)
   @Exclude({ toPlainOnly: true }) 
   orderItems: OrderItem[];
+
+  // @OneToMany(()=>FinalBilling,(finalbilling)=>finalbilling.foodOrder)
+  // finalbillings:FinalBilling[]
+
+  @ManyToOne(()=>Booking,(booking)=>booking.foodOrders)
+  booking:Booking;
+
 }

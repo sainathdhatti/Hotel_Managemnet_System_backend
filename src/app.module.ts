@@ -47,6 +47,12 @@ import { SuperAdmin } from './super-admin/superadmin.entity';
 import { TimeSlot } from './time_slot/time_slot.Entity';
 import { UserEntity } from './user/user.entity';
 import { Contact_Us } from './contact_us/contact_us.Entity';
+import { FinalBillingModule } from './final_billing/final_billing.module';
+import { FinalBilling } from './final_billing/final_billing.Entity';
+import { Receptionist } from './reception/receptionist.Entity';
+import { ReceptionistModule } from './reception/receptionist.module';
+
+
 
 
 @Module({
@@ -82,7 +88,9 @@ import { Contact_Us } from './contact_us/contact_us.Entity';
           SpaBooking,
           Booking,
           SpaAuthGuard,
-          Contact_Us
+          Contact_Us,
+          FinalBilling,
+          Receptionist
         ],
         synchronize: true, // Use with caution in production
       }),
@@ -130,7 +138,9 @@ import { Contact_Us } from './contact_us/contact_us.Entity';
     StaffMembersModule,
     SpaBookingModule,
     FoodAuthModule,
-    ContactUsModule
+    ContactUsModule,
+    FinalBillingModule,
+    ReceptionistModule
   ],
   controllers: [AppController],
   providers: [AppService],

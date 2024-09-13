@@ -12,8 +12,7 @@ export class SpaBookingController {
         return await this.spabookingService.getAllSpaBookings()
     }
 
-    @Get(':id')
-    @UsePipes(new ValidationPipe())
+    @Get()
     async getSpaBookingsById(@Param('id',ParseIntPipe)id:number){
         const findspabooking=await this.spabookingService.getSpaBookingsById(id)
         if(!findspabooking){
