@@ -49,6 +49,11 @@ import { UserEntity } from './user/user.entity';
 import { Contact_Us } from './contact_us/contact_us.Entity';
 import { ReviewsModule } from './reviews/reviews.module';
 import { Review } from './reviews/reviews.entity';
+import { FinalBillingModule } from './final_billing/final_billing.module';
+import { FinalBilling } from './final_billing/final_billing.Entity';
+import { Receptionist } from './reception/receptionist.Entity';
+import { ReceptionistModule } from './reception/receptionist.module';
+
 
 
 
@@ -87,7 +92,9 @@ import { Review } from './reviews/reviews.entity';
           Booking,
           SpaAuthGuard,
           Contact_Us,
-          Review
+          Review,
+          FinalBilling,
+          Receptionist,
         ],
         synchronize: true, // Use with caution in production
       }),
@@ -137,6 +144,8 @@ import { Review } from './reviews/reviews.entity';
     FoodAuthModule,
     ContactUsModule,
     ReviewsModule,
+    FinalBillingModule,
+    ReceptionistModule,
   ],
   controllers: [AppController],
   providers: [AppService,],

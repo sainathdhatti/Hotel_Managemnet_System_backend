@@ -1,5 +1,7 @@
 import { IsDate, IsNotEmpty, IsNumber, IsString, IsEnum, IsOptional } from 'class-validator'; 
-import {Gender, BookingStatus } from '../spa_bookingEntity';
+import {Gender,} from '../spa_bookingEntity';
+import { SpaBookingStatus } from "../spa_bookingEntity";
+
 
 export class CreateSpaBookingDto {
     @IsNotEmpty()
@@ -18,9 +20,9 @@ export class CreateSpaBookingDto {
     @IsNotEmpty()
     gender: Gender;
 
-    @IsEnum(BookingStatus)
+    @IsEnum(SpaBookingStatus)
     @IsOptional()
-    status?: BookingStatus; 
+    status?: SpaBookingStatus; 
 
     @IsNotEmpty()
     @IsNumber()
@@ -32,6 +34,9 @@ export class CreateSpaBookingDto {
 
     @IsNotEmpty()
     @IsNumber()
-    timeslotId: number; 
-
+    timeslotId: number;
+    
+    @IsNotEmpty()
+    @IsNumber()
+    bookingId:number
 }

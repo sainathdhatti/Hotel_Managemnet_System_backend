@@ -6,10 +6,11 @@ import { UserEntity } from 'src/user/user.entity';
 import { OrderItem } from './foodorderItem.entity';
 import { OrderService } from './food_order.service';
 import { OrderController } from './food_order.controller';
+import { BookingsModule } from 'src/bookings/bookings.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([FoodOrder, OrderItem, FoodEntity, UserEntity]),
+    TypeOrmModule.forFeature([FoodOrder, OrderItem, FoodEntity, UserEntity]),BookingsModule
   ],
   providers: [OrderService],
   controllers: [OrderController],
