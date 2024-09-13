@@ -56,27 +56,23 @@ export class FooditemsService {
     }
   }
 
-  async updateFood(id: number, updateData: Partial<CreateFoodDto>): Promise<FoodEntity> {
-    this.logger.log(`Updating food item with ID ${id}`);
+  async updateFood(food_id: number, updateData: Partial<CreateFoodDto>) {
+    this.logger.log(`Updating food item with ID ${food_id}`);
     try {
-      const food = await this.foodRepository.preload({
-        food_id: id,
-        ...updateData,
-      });
-
-      if (!food) {
-        this.logger.warn(`Food item with ID ${id} not found for update`);
-        throw new NotFoundException(`Food item with ID ${id} not found`);
+      const result = await this.foodRepository.update(food_id ,updateData);
+  
+      if (result.affected === 0) {
+        this.logger.warn(`Food item with ID ${food_id} not found for update`);
+        throw new NotFoundException(`Food item with ID ${food_id} not found`);
       }
-
-      const result = await this.foodRepository.save(food);
-      this.logger.log(`Food item with ID ${id} updated`);
-      return result;
+  
+      this.logger.log(`Food item with ID ${food_id} updated`);
     } catch (error) {
       this.logger.error('Failed to update food item', error.stack);
       throw new InternalServerErrorException('Failed to update food item');
     }
   }
+  
 
   async deleteFood(id: number): Promise<void> {
     this.logger.log(`Deleting food item with ID ${id}`);

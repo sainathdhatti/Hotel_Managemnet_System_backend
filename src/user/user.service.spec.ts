@@ -5,9 +5,8 @@ import { UserEntity } from './user.entity';
 import { Repository } from 'typeorm';
 import { MailerService } from '@nestjs-modules/mailer';
 import { ConfigService } from '@nestjs/config';
-
 import * as bcrypt from 'bcrypt';
-import { NotFoundException } from '@nestjs/common';
+
 
 jest.mock('bcrypt');
 
@@ -49,7 +48,9 @@ describe('UserService', () => {
     }).compile();
 
     service = module.get<UserService>(UserService);
-    userRepository = module.get<Repository<UserEntity>>(getRepositoryToken(UserEntity));
+    userRepository = module.get<Repository<UserEntity>>(
+      getRepositoryToken(UserEntity),
+    );
     mailerService = module.get<MailerService>(MailerService);
   });
 
@@ -61,20 +62,25 @@ describe('UserService', () => {
     expect(service).toBeDefined();
   });
 
-
   it('should return all users from the repository', async () => {
     const mockUsers = [
       {
         id: 1,
         email: 'user1@example.com',
-        passwordHash: await bcrypt.hash('password1', 10),
-        name: 'User 1',
+        password: await bcrypt.hash('password1', 10),
+        firstName: 'User 1',
+        lastName: 'User 1',
+        phoneNumber: '12345678',
+        aadharCardNumber: '555667788',
       },
       {
         id: 2,
         email: 'user2@example.com',
-        passwordHash: await bcrypt.hash('password2', 10),
-        name: 'User 2',
+        password: await bcrypt.hash('password2', 10),
+        firstName: 'User 2',
+        lastName: 'User 2',
+        phoneNumber: '12345678',
+        aadharCardNumber: '555667788',
       },
     ] as UserEntity[];
 
@@ -91,45 +97,45 @@ describe('UserService', () => {
     const mockUser = {
       id: 1,
       email: 'user1@example.com',
-      passwordHash: "ghhjkpo1234",
-      name: 'User 1',
-      phoneNumber: "12345678",
+      password: 'ghhjkpo1234',
+      firstName: 'User 1',
+      phoneNumber: '12345678',
       aadharCardNumber: '555667788',
+      lastName: 'User 1',
     } as UserEntity;
-  
+
     jest.spyOn(userRepository, 'findOneBy').mockResolvedValue(mockUser);
-  
+
     const result = await service.getUser(userId);
-  
+
     expect(result).toEqual(mockUser);
     expect(userRepository.findOneBy).toHaveBeenCalledWith({ id: userId });
   });
-  
-
- 
 
   it('should update a user by ID', async () => {
     const userId = 1;
     const updateUserDto = {
-        name: 'Jane Doe',
-        email: 'jane@example.com',
-        passwordHash: 'password123',
-        phoneNumber:'12345678',
-        aadharCardNumber:'888899990000'
+      name: 'Jane Doe',
+      email: 'jane@example.com',
+      passwordHash: 'password123',
+      phoneNumber: '12345678',
+      aadharCardNumber: '888899990000',
     };
 
     const mockUser = {
       id: 1,
-      name: 'Jane Doe',
+      firstName: 'Jane Doe',
+      lastName: 'Doe',
       email: 'jane@example.com',
-      passwordHash: 'password123',
-      phoneNumber:'12345678',
-      aadharCardNumber:'888899990000'
-      
+      password: 'password123',
+      phoneNumber: '12345678',
+      aadharCardNumber: '888899990000',
+      orders: [], // add this property
+      spabookings: [], // add this property
+      bookings: [], // add this property
     };
 
     jest.spyOn(service, 'updateUser').mockResolvedValue(mockUser);
-
 
     const result = await service.updateUser(userId, updateUserDto);
 
@@ -141,22 +147,19 @@ describe('UserService', () => {
     const mockUser = {
       id: userId,
       email: 'user1@example.com',
-      passwordHash: 'ghhjkpo1234',
-      name: 'User 1',
+      password: 'ghhjkpo1234',
+      firstName: 'User 1',
       phoneNumber: '12345678',
       aadharCardNumber: '555667788',
+      lastName: 'User 1',
     } as UserEntity;
-  
+
     jest.spyOn(service, 'getUser').mockResolvedValue(mockUser);
     jest.spyOn(userRepository, 'remove').mockResolvedValue(mockUser);
-  
+
     await service.deleteUser(userId);
-  
+
     expect(service.getUser).toHaveBeenCalledWith(userId);
     expect(userRepository.remove).toHaveBeenCalledWith(mockUser);
   });
-  
-  
-
- 
 });

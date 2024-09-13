@@ -47,10 +47,13 @@ import { SuperAdmin } from './super-admin/superadmin.entity';
 import { TimeSlot } from './time_slot/time_slot.Entity';
 import { UserEntity } from './user/user.entity';
 import { Contact_Us } from './contact_us/contact_us.Entity';
+import { ReviewsModule } from './reviews/reviews.module';
+import { Review } from './reviews/reviews.entity';
 import { FinalBillingModule } from './final_billing/final_billing.module';
 import { FinalBilling } from './final_billing/final_billing.Entity';
 import { Receptionist } from './reception/receptionist.Entity';
 import { ReceptionistModule } from './reception/receptionist.module';
+
 
 
 
@@ -89,8 +92,9 @@ import { ReceptionistModule } from './reception/receptionist.module';
           Booking,
           SpaAuthGuard,
           Contact_Us,
+          Review,
           FinalBilling,
-          Receptionist
+          Receptionist,
         ],
         synchronize: true, // Use with caution in production
       }),
@@ -139,10 +143,11 @@ import { ReceptionistModule } from './reception/receptionist.module';
     SpaBookingModule,
     FoodAuthModule,
     ContactUsModule,
+    ReviewsModule,
     FinalBillingModule,
-    ReceptionistModule
+    ReceptionistModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService,],
 })
 export class AppModule {}

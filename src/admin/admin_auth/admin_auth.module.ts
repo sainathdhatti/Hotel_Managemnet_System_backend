@@ -2,7 +2,8 @@ import { Module } from '@nestjs/common';
 import { AdminAuthController } from './admin_auth.controller';
 import { AdminAuthService } from './admin_auth.service';
 import { JwtModule } from '@nestjs/jwt';
-import { AdminModule } from 'src/admin/admin.module';
+import { AdminModule } from '../admin.module';
+
 
 @Module({
   imports: [

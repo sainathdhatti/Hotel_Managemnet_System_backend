@@ -119,32 +119,33 @@ export class SpaBookingService {
         "Cannot book a spa service for a past time slot"
       );
     }
+<<// Count the number of bookings for a specific user and status
+const result = await this.spabookingRepo
+  .createQueryBuilder("booking")
+  .select("COUNT(DISTINCT booking.id)", "bookingCount")
+  .where("booking.userId = :userId", { userId }) // Filter by user
+  .andWhere("booking.status != :cancelledStatus", {
+    cancelledStatus: SpaBookingStatus.CANCELLED, // Exclude cancelled bookings
+  })
+  .andWhere("booking.status = :checkedInStatus", {
+    checkedInStatus: BookingStatus.CHECKED_IN // Only count checked-in bookings
+  })
+  .getRawOne();
 
-    const result = await this.spabookingRepo
-      .createQueryBuilder("booking")
-      .select("COUNT(DISTINCT booking.id)", "bookingCount")
-      .where("booking.userId = :userId", { userId })
-      .andWhere("booking.status != :status", {
-        status: SpaBookingStatus.CANCELLED,
-      })
-      .andWhere("booking.status = :status", {
-        status: BookingStatus.CHECKED_IN
-,      })
-      .getRawOne();
+// Parse the result to get the booking count
+const bookingCount = parseInt(result.bookingCount, 10);
 
-    // Parse the result to get the booking count
-    const bookingCount = parseInt(result.bookingCount, 10);
+// Log the booking count for debugging
+console.log("Booking Count:", bookingCount);
 
-    // Log the booking count for debugging
-    console.log("Booking Count:", bookingCount);
+// Check if the booking count exceeds the limit
+if (bookingCount >= 3) {
+  console.log("Booking count exceeds the limit");
+  throw new ConflictException(
+    "Cannot book more than 3 spa sessions for this user"
+  );
+}
 
-    // Check if the booking count exceeds the limit
-    if (bookingCount >= 3) {
-      console.log("Booking count exceeds the limit");
-      throw new ConflictException(
-        "Cannot book more than 3 spa sessions for this user"
-      );
-    }
 
     // Choose the first available staff member
     const allocatedStaff = availableStaffMembers[0];

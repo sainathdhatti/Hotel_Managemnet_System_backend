@@ -27,7 +27,7 @@ export class SpaAuthService {
         }
 
 // Check if the staff member's category is "SpaStaff"
-const isSpaStaff = staffmember.staffcategory.category === "SpaStaff";
+const isSpaStaff = staffmember.staffcategory.category === "Spa";
 console.log(isSpaStaff); // Log the result of the check
 
 // If the staff member is not SpaStaff, throw a ForbiddenException
