@@ -1,7 +1,9 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from 'typeorm';
 import { UserEntity } from 'src/user/user.entity';
 import { RoomCategories } from 'src/room-categories/room-categories.entity';
 import { Room } from 'src/rooms/rooms.entity';
+import { Review } from 'src/reviews/reviews.entity';
+//import { FinalBilling } from 'src/final_billing/final_billing.Entity';
 
 export enum BookingStatus {
   AVAILABLE = 'available',
@@ -10,7 +12,6 @@ export enum BookingStatus {
   CHECKED_OUT = 'checked_out',
   CANCELLED = 'cancelled',
 }
-
 
 @Entity('bookings')
 export class Booking {
@@ -27,7 +28,6 @@ export class Booking {
     type: 'enum',
     enum: BookingStatus,
     default: BookingStatus.AVAILABLE,
-    nullable: false,
   })
   status: BookingStatus;
 
@@ -54,4 +54,10 @@ export class Booking {
 
   @ManyToOne(() => Room, { eager: true })
   room: Room;
+
+  @OneToMany(() => Review, review => review.booking)
+  reviews: Review[];
+  
+  @Column({ default: false })
+  reviewLinkSent: boolean;
 }

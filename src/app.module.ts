@@ -47,6 +47,10 @@ import { SuperAdmin } from './super-admin/superadmin.entity';
 import { TimeSlot } from './time_slot/time_slot.Entity';
 import { UserEntity } from './user/user.entity';
 import { Contact_Us } from './contact_us/contact_us.Entity';
+import { ReviewsModule } from './reviews/reviews.module';
+import { Review } from './reviews/reviews.entity';
+
+
 
 
 @Module({
@@ -82,7 +86,8 @@ import { Contact_Us } from './contact_us/contact_us.Entity';
           SpaBooking,
           Booking,
           SpaAuthGuard,
-          Contact_Us
+          Contact_Us,
+          Review
         ],
         synchronize: true, // Use with caution in production
       }),
@@ -130,9 +135,10 @@ import { Contact_Us } from './contact_us/contact_us.Entity';
     StaffMembersModule,
     SpaBookingModule,
     FoodAuthModule,
-    ContactUsModule
+    ContactUsModule,
+    ReviewsModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService,],
 })
 export class AppModule {}

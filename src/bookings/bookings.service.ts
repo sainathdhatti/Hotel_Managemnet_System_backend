@@ -6,44 +6,44 @@ import { CreateBookingDto } from './dtos/createBookings.dto';
 import { UserService } from 'src/user/user.service';
 import { RoomCategoriesService } from 'src/room-categories/room-categories.service';
 import { RoomsService } from 'src/rooms/rooms.service';
-import { Room, RoomStatus} from 'src/rooms/rooms.entity';
+import { Room, RoomStatus } from 'src/rooms/rooms.entity';
 import { UpdateBookingDto } from './dtos/updateBookings.dto';
+//import { FinalBillingService } from 'src/final_billing/final_billing.service';
 
 @Injectable()
 export class BookingsService {
-    constructor(@InjectRepository(Booking) private readonly bookingsRepo:Repository<Booking>,
-                private readonly userService:UserService,
-                private readonly roomcategoryService:RoomCategoriesService  , 
-                private readonly roomService:RoomsService,
-                // @InjectRepository(RoomCategories) private readonly roomcategoryRepo:Repository<RoomCategories>         
-){}
+  constructor(
+    @InjectRepository(Booking) private readonly bookingsRepo: Repository<Booking>,
+    private readonly userService: UserService,
+    private readonly roomcategoryService: RoomCategoriesService,
+    private readonly roomService: RoomsService,
+    //private readonly finalBillingService: FinalBillingService
+  ) {}
 
-    async getAllBookings() {
-          return this.bookingsRepo.find({ relations: ['user', 'roomcategory'] });
-    }
+  async getAllBookings() {
+    return this.bookingsRepo.find({ relations: ['user', 'roomcategory'] });
+  }
 
-    async getBookingById(id:number){
-        return await this.bookingsRepo.findOne({
-            where:{bookingId:id},
-            relations:['user','roomcategory']
-        })
-    }
+  async getBookingById(id: number) {
+    return await this.bookingsRepo.findOne({
+      where: { bookingId: id },
+      relations: ['user', 'roomcategory']
+    });
+  }
 
-    async getBookingCustomerById(customerId: number) {
-        // Fetch the user by ID
-        const user = await this.userService.getUser(customerId);
-        if (!user) {
-            throw new NotFoundException('User not found');
-        }
-        // Fetch all bookings for the specific user
-        const bookings = await this.bookingsRepo.find({
-            where: { user: user },
-            relations: ['user','roomcategory']
-        });
-        return bookings;
+  async getBookingCustomerById(customerId: number) {
+    // Fetch the user by ID
+    const user = await this.userService.getUser(customerId);
+    if (!user) {
+      throw new NotFoundException('User not found');
     }
-    
-  
+    // Fetch all bookings for the specific user
+    const bookings = await this.bookingsRepo.find({
+      where: { user: user },
+      relations: ['user', 'roomcategory']
+    });
+    return bookings;
+  }
 
   private async filterAvailableRooms(rooms: Room[], checkInDate: Date, checkOutDate: Date): Promise<Room[]> {
     const availableRooms = [];
@@ -67,13 +67,14 @@ export class BookingsService {
 
     return conflictingBookings.length === 0;
   }
+
   async createBooking(createBooking: CreateBookingDto) {
-    const { userId, categoryId, checkInDate, checkOutDate, noOfAdults, noOfChildren } = createBooking;
+    const { userId, categoryId, checkInDate, checkOutDate, noOfAdults, noOfChildrens } = createBooking;
+    
+    const findUser = await this.userService.getUser(userId);
+    const findCategory = await this.roomcategoryService.findOneRoomCategory(categoryId);
   
-    const finduser = await this.userService.getUser(userId);
-    const findcategory = await this.roomcategoryService.findOneRoomCategory(categoryId);
-  
-    if (!finduser || !findcategory) {
+    if (!findUser || !findCategory) {
       throw new NotFoundException('User or category not found');
     }
   
@@ -99,7 +100,6 @@ export class BookingsService {
       throw new ConflictException('User already has a booking for the selected dates');
     }
 
-  
     const rooms = await this.roomService.findAllRoomsByCategory(categoryId);
     const availableRooms = await this.filterAvailableRooms(rooms, checkInDate, checkOutDate);
   
@@ -109,42 +109,35 @@ export class BookingsService {
   
     const roomToBook = availableRooms[0];
     const numberOfNights = Math.ceil((checkOut.getTime() - checkIn.getTime()) / (1000 * 60 * 60 * 24));
-    const totalPrice = findcategory.price * numberOfNights;
+    const totalPrice = findCategory.price * numberOfNights;
   
     const booking = new Booking();
-    booking.noOfAdults=noOfAdults;
-    booking.noOfChildrens=noOfChildren;
-    booking.user = finduser;
+    booking.noOfAdults = noOfAdults;
+    booking.noOfChildrens = noOfChildrens; // Use the correct property name
+    booking.user = findUser;
     booking.room = roomToBook;
-    booking.roomcategory = findcategory;
+    booking.roomcategory = findCategory;
     booking.checkInDate = checkInDate;
     booking.checkOutDate = checkOutDate;
     booking.status = BookingStatus.BOOKED;
     booking.noOfDays = numberOfNights;
     booking.TotalAmount = totalPrice;
-    booking.room.status=RoomStatus.BOOKED
-  
-    // Check if findcategory.room is defined
-    // if (findcategory.room) {
-    //   findcategory.room.status = RoomStatus.BOOKED
-    // } else {
-    //   console.error('Room is not defined in findcategory.');
-    // }
-  
-    return this.bookingsRepo.save(booking);
-  }
-  
+    booking.room.status = RoomStatus.BOOKED;
 
+    const savedBooking = await this.bookingsRepo.save(booking);
+    //await this.finalBillingService.calculateRoomBookingAmount(savedBooking.bookingId);
+    return savedBooking;
+  }
 
   async updateBooking(id: number, updateBooking: UpdateBookingDto) {
     // Fetch the existing booking
     const findBooking = await this.bookingsRepo.findOne({
-        where: { bookingId: id },
-        relations: ['room']
+      where: { bookingId: id },
+      relations: ['room']
     });
 
     if (!findBooking) {
-        throw new NotFoundException('No booking exists');
+      throw new NotFoundException('No booking exists');
     }
 
     const { categoryId, checkInDate, checkOutDate } = updateBooking;
@@ -154,79 +147,80 @@ export class BookingsService {
     const rooms = await this.roomService.findAllRoomsByCategory(categoryId);
 
     if (!findCategory) {
-        throw new NotFoundException('Room category not found');
+      throw new NotFoundException('Room category not found');
     }
 
     // Function to check availability for the given dates
     const checkRoomAvailability = async (newCheckInDate: Date, newCheckOutDate: Date) => {
-        const availableRooms = await this.filterAvailableRooms(rooms, newCheckInDate, newCheckOutDate);
-        return availableRooms;
+      const availableRooms = await this.filterAvailableRooms(rooms, newCheckInDate, newCheckOutDate);
+      return availableRooms;
     };
 
     let availableRooms = [];
 
     if (categoryId || checkInDate || checkOutDate) {
-        // Check availability only if categoryId or dates are provided
-        if (categoryId) {
-            availableRooms = await checkRoomAvailability(findBooking.checkInDate, findBooking.checkOutDate);
-        }
+      // Check availability only if categoryId or dates are provided
+      if (categoryId) {
+        availableRooms = await checkRoomAvailability(findBooking.checkInDate, findBooking.checkOutDate);
+      }
 
-        if (checkInDate && checkOutDate) {
-            availableRooms = await checkRoomAvailability(new Date(checkInDate), new Date(checkOutDate));
-        }
+      if (checkInDate && checkOutDate) {
+        availableRooms = await checkRoomAvailability(new Date(checkInDate), new Date(checkOutDate));
+      }
 
-        if (availableRooms.length === 0) {
-            throw new ConflictException('No available rooms for the selected dates');
-        }
+      if (availableRooms.length === 0) {
+        throw new ConflictException('No available rooms for the selected dates');
+      }
     }
-    findBooking.status=BookingStatus.AVAILABLE;
-    findCategory.room.status=RoomStatus.AVAILABLE;
+
+    findBooking.status = BookingStatus.AVAILABLE;
+    findCategory.room.status = RoomStatus.AVAILABLE;
 
     // Update the booking with the new details
     findBooking.checkInDate = checkInDate ? new Date(checkInDate) : findBooking.checkInDate;
     findBooking.checkOutDate = checkOutDate ? new Date(checkOutDate) : findBooking.checkOutDate;
     findBooking.room = availableRooms[0]; // Example: Assigning the first available room
-    findBooking.status=BookingStatus.BOOKED
-    findBooking.room.status=RoomStatus.BOOKED
+    findBooking.status = BookingStatus.BOOKED;
+    findBooking.room.status = RoomStatus.BOOKED;
+
     // Save the updated booking
     const updatedBooking = await this.bookingsRepo.save(findBooking);
 
     // Return the updated booking with all related entities
     return this.bookingsRepo.findOne({
-        where: { bookingId: updatedBooking.bookingId },
-        relations: ['room', 'roomCategory', 'user'] // Ensure relations are included in the final result
+      where: { bookingId: updatedBooking.bookingId },
+      relations: ['room', 'roomcategory', 'user'] // Ensure relations are included in the final result
     });
-}
+  }
 
-async deleteBooking(bookingId:number){
+  async deleteBooking(bookingId: number) {
     const booking = await this.bookingsRepo.findOne({
-        where: { bookingId },
-        relations: ['room', 'roomcategory','user'],
-      });
-  
-      if (!booking) {
-        throw new NotFoundException('Booking not found');
-      }
-  
-      // Get current date and time
-      const now = new Date();
-  
-      // Calculate the time difference between now and the booking check-in date
-      const checkInDate = new Date(booking.checkInDate);
-      const timeDifference = checkInDate.getTime() - now.getTime();
-      const hoursDifference = timeDifference / (1000 * 60 * 60);
-  
-      if (hoursDifference <= 48) {
-        throw new BadRequestException('You can only cancel the booking more than 48 hours before the check-in time');
-      }
-  
-      // Update the booking status to canceled or delete the booking
-      booking.status = BookingStatus.CANCELLED;
-      await this.bookingsRepo.save(booking);
-  
-      // Optionally, update the room status to available if needed
-      booking.room.status=RoomStatus.AVAILABLE
-      return booking
-    }
-}
+      where: { bookingId },
+      relations: ['room', 'roomcategory', 'user'],
+    });
 
+    if (!booking) {
+      throw new NotFoundException('Booking not found');
+    }
+
+    // Get current date and time
+    const now = new Date(); 
+
+    // Calculate the time difference between now and the booking check-in date
+    const checkInDate = new Date(booking.checkInDate);
+    const timeDifference = checkInDate.getTime() - now.getTime();
+    const hoursDifference = timeDifference / (1000 * 60 * 60);
+
+    if (hoursDifference <= 48) {
+      throw new BadRequestException('You can only cancel the booking more than 48 hours before the check-in time');
+    }
+
+    // Update the booking status to canceled or delete the booking
+    booking.status = BookingStatus.CANCELLED;
+    await this.bookingsRepo.save(booking);
+
+    // Optionally, update the room status to available if needed
+    booking.room.status = RoomStatus.AVAILABLE;
+    return booking;
+  }
+}

@@ -3,6 +3,7 @@ import { Booking } from 'src/bookings/bookings.Entity';
 import { FoodOrder } from 'src/Food_module/Food_order/Food_order.entity';
 import { SpaBooking } from 'src/spa_booking/spa_bookingEntity';
 
+
 @Entity('user_entity')
 export class UserEntity {
   @PrimaryGeneratedColumn()
@@ -40,4 +41,6 @@ export class UserEntity {
 
   @OneToMany(() => Booking, (booking) => booking.user)
   bookings: Booking[];
+
+ 
 }

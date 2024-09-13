@@ -21,11 +21,11 @@ export class FoodOrder {
   @Column({ type: 'enum', enum: OrderStatus, default: OrderStatus.PENDING })
   status: OrderStatus;
 
-  @ManyToOne(() => UserEntity, (user) => user.orders,{ onDelete:'SET NULL' })
+  @ManyToOne(() => UserEntity, (user) => user.orders,{ cascade: true })
   @Type(() => UserEntity)
   user: UserEntity;
 
-  @OneToMany(() => OrderItem, (orderItem) => orderItem.order, { onDelete:'SET NULL' })
+  @OneToMany(() => OrderItem, (orderItem) => orderItem.order, { cascade: true })
   @Type(() => OrderItem)
   @Exclude({ toPlainOnly: true }) 
   orderItems: OrderItem[];

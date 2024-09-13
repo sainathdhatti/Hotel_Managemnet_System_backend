@@ -10,6 +10,7 @@ import { RoomsModule } from 'src/rooms/rooms.module';
 @Module({
   imports:[TypeOrmModule.forFeature([Booking]),UserModule,RoomCategoriesModule,RoomsModule],
   controllers: [BookingsController],
-  providers: [BookingsService]
+  providers: [BookingsService],
+  exports:[BookingsService]
 })
 export class BookingsModule {}

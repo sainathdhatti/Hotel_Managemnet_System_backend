@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@n
 import { AmenitiesService } from './amenities.service';
 import { CreateAmenitiesDto } from './dtos/create-amenities.dto';
 import { UpdateAmenitiesDto } from './dtos/update-amenities.dto';
-import { AdminAuthGuard } from 'src/admin/admin_auth/admin_authGuard';
+
 
 
 @Controller('amenities')

@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ConflictException,
   Injectable,
   NotFoundException,
@@ -113,6 +114,16 @@ export class SpaBookingService {
       throw new ConflictException("No available staff member for the given date and time slot");
     }
 
+    // Get the current date and time
+    const currentDateTime = new Date();
+
+    // Check if the selected time slot is in the past
+    const slotDateTime = new Date(booking_date); // Assume booking_date is a Date or can be converted to one
+    if (slotDateTime <= currentDateTime) {
+      throw new BadRequestException(
+        "Cannot book a spa service for a past time slot"
+      );
+    }
     const result = await this.spabookingRepo.createQueryBuilder("SpaBooking")
     .select("COUNT(distinct SpaBooking.id)", "bookingCount").getRawOne(); 
     const bookingCount=parseInt(result.bookingCount);
