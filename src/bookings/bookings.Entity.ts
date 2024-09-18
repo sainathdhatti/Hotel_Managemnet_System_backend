@@ -17,6 +17,9 @@ export enum BookingStatus {
 
 @Entity('bookings')
 export class Booking {
+  static find(arg0: { where: { userId: number; status: string; }; }) {
+    throw new Error('Method not implemented.');
+  }
   @PrimaryGeneratedColumn()
   bookingId: number;
 

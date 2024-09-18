@@ -10,9 +10,15 @@ export class FinalBillingController {
         return await this.finalBillingService.getAllFinalBillings();
     }
 
-    @Get("users/:userId")
-    async calculateTotalAmount(@Param('userId') userId: number) {
-        return await this.finalBillingService.calculateTotalAmount(userId);
+    @Get("user/:userId/booking/:bookingId")
+
+    async calculateTotalAmount(@Param('userId') userId: number,@Param('bookingId') bookingId: number) {
+        return await this.finalBillingService.calculateTotalAmount(userId,bookingId);
+    }
+
+    @Get("user/:userId")
+    async getFinalBillingsByUser(@Param('userId') userId: number) {
+        return await this.finalBillingService.getFinalBillingsByUser(userId);
     }
 }
 

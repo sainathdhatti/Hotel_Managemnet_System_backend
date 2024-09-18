@@ -119,7 +119,7 @@ export class SpaBookingService {
         "Cannot book a spa service for a past time slot"
       );
     }
-<<// Count the number of bookings for a specific user and status
+
 const result = await this.spabookingRepo
   .createQueryBuilder("booking")
   .select("COUNT(DISTINCT booking.id)", "bookingCount")
