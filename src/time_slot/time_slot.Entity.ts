@@ -1,4 +1,4 @@
-import { SpaBooking } from 'src/spa_booking/spa_bookingEntity';
+import { SpaBooking } from '../spa_booking/spa_bookingEntity';
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 
 @Entity('time_slots')

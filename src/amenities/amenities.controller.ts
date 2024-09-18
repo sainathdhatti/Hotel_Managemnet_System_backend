@@ -10,7 +10,6 @@ export class AmenitiesController {
   constructor(private readonly amenitiesService: AmenitiesService) {}
 
   @Post()
-  // @UseGuards(AdminAuthGuard)
   async createAmenities(@Body() createAmenitiesDto: CreateAmenitiesDto){
     return this.amenitiesService.createAmenities(createAmenitiesDto);
   }

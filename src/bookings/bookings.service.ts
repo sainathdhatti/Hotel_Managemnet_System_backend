@@ -1,3 +1,4 @@
+
 import {
   BadRequestException,
   ConflictException,
@@ -13,6 +14,7 @@ import { RoomCategoriesService } from "src/room-categories/room-categories.servi
 import { RoomsService } from "src/rooms/rooms.service";
 import { Room, RoomStatus } from "src/rooms/rooms.entity";
 
+
 @Injectable()
 export class BookingsService {
   constructor(
@@ -21,8 +23,12 @@ export class BookingsService {
     private readonly userService: UserService,
     private readonly roomcategoryService: RoomCategoriesService,
     private readonly roomService: RoomsService,
+
+    
+
     @InjectRepository(Room)
     private readonly roomRepo: Repository<Room>
+
   ) {}
 
   async getAllBookings() {
@@ -217,6 +223,8 @@ export class BookingsService {
     booking.room.status = RoomStatus.AVAILABLE;
     return booking;
   }
+
+ 
 
   async getPresentBookings(userId: number, bookingId: number) {
     const bill = await this.bookingsRepo.findOne({

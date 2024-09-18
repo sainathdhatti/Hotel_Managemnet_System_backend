@@ -79,14 +79,19 @@ export class BookingsController {
     return await this.bookingsService.getPresentBookings(userId, bookingId);
   }
 
+@Get('users/:userId/BookingId')
+async getBookingIdOfBookedStatus(@Param('userId') userId: number) {
+  return await this.bookingsService.getBookingIdOfBookedStatus(userId);
+}
 
-  @Get('available/:checkInDate/:checkOutDate')
-  async getAvailableRooms(
-    @Param('checkInDate') checkInDate: Date,
-    @Param('checkOutDate') checkOutDate: Date
-  ) {
-    return this.bookingsService.getAvailableRooms(checkInDate, checkOutDate);
-  }
+@Get('available/:checkInDate/:checkOutDate')
+async getAvailableRooms(
+  @Param('checkInDate') checkInDate: Date,
+  @Param('checkOutDate') checkOutDate: Date
+) {
+  return this.bookingsService.getAvailableRooms(checkInDate, checkOutDate);
+}
+
 
   @Patch(":bookingId")
   @UsePipes(new ValidationPipe())

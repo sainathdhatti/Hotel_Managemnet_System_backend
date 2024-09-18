@@ -16,14 +16,11 @@ export class UserController {
     return this.userService.createUser(createUserDto);
   }
 
-  @Get()
-  
-  // @UseGuards(AuthGuard)
+  @Get() 
   async getAllUsers(){
     return this.userService.getAllUsers();
   }
   @Get(':id')
-  // @UseGuards(AuthGuard)
   async getUser(@Param('id') id: number) {
     return this.userService.getUser(id);
   }

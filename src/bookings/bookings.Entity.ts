@@ -1,11 +1,17 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from 'typeorm';
-import { UserEntity } from 'src/user/user.entity';
-import { RoomCategories } from 'src/room-categories/room-categories.entity';
-import { Room } from 'src/rooms/rooms.entity';
-import { Review } from 'src/reviews/reviews.entity';
-import { FinalBilling } from 'src/final_billing/final_billing.Entity';
-import { SpaBooking } from 'src/spa_booking/spa_bookingEntity';
-import { FoodOrder } from 'src/Food_module/Food_order/Food_order.entity';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  OneToMany,
+} from 'typeorm';
+import { UserEntity } from '../user/user.entity';
+import { RoomCategories } from '../room-categories/room-categories.entity';
+import { Room } from '../rooms/rooms.entity';
+import { Review } from '../reviews/reviews.entity';
+import { FinalBilling } from '../final_billing/final_billing.Entity'; // import { FinalBilling } from 'src/final_billing/final_billing.Entity';
+import { SpaBooking } from '../spa_booking/spa_bookingEntity';
+import { FoodOrder } from '../Food_module/Food_order/Food_order.entity';
 
 export enum BookingStatus {
   AVAILABLE = 'AVAILABLE',
@@ -54,28 +60,27 @@ export class Booking {
   @Column({ type: 'decimal', precision: 10, scale: 2, default: 0 })
   advancePayment: number;
 
-
-  @ManyToOne(() => RoomCategories, (roomcategory) => roomcategory.roombookings)
+  @ManyToOne(() => RoomCategories, (roomcategory) => roomcategory.roombookings,{onDelete:'SET NULL'})
   roomcategory: RoomCategories;
 
-  @ManyToOne(() => UserEntity, (user) => user.bookings)
+  @ManyToOne(() => UserEntity, (user) => user.bookings,{onDelete:'SET NULL'})
   user: UserEntity;
 
-  @ManyToOne(() => Room, { eager: true })
+  @ManyToOne(() => Room, { eager: true ,onDelete:'SET NULL'})
   room: Room;
 
-@OneToMany(() => Review, review => review.booking)
+  @OneToMany(() => Review, (review) => review.booking,{onDelete:'SET NULL'})
   reviews: Review[];
 
   @Column({ default: false })
   reviewLinkSent: boolean;
 
-  @OneToMany(() => FinalBilling, finalBilling => finalBilling.booking)
+  @OneToMany(() => FinalBilling, (finalBilling) => finalBilling.booking,{onDelete:'SET NULL'})
   finalbillings: FinalBilling[];
 
-  @OneToMany(() => SpaBooking, spaBooking => spaBooking.booking)
+  @OneToMany(() => SpaBooking, (spaBooking) => spaBooking.booking,{onDelete:'SET NULL'})
   spabookings: SpaBooking[];
 
-  @OneToMany(() => FoodOrder, foodOrder => foodOrder.booking)
+  @OneToMany(() => FoodOrder, (foodOrder) => foodOrder.booking,{onDelete:'SET NULL'})
   foodOrders: FoodOrder[];
 }

@@ -1,4 +1,4 @@
-import { Booking } from 'src/bookings/bookings.Entity';
+import { Booking } from '../bookings/bookings.Entity';
 import { UserEntity } from 'src/user/user.entity';
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToOne } from 'typeorm';
 

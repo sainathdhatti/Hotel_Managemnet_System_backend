@@ -1,4 +1,4 @@
-import { StaffCategory } from "src/staff_category/staff_categoryEntity";
+import { StaffCategory } from "../staff_category/staff_categoryEntity";
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 export enum Gender {
   MALE = 'male',
@@ -34,7 +34,7 @@ export class Staff_Members {
   })
   gender: string;
    
-  @ManyToOne(() => StaffCategory, (staffcategory) => staffcategory.staffmembers)
+  @ManyToOne(() => StaffCategory, (staffcategory) => staffcategory.staffmembers,{onDelete:'SET NULL'})
   staffcategory: StaffCategory;
 
 }

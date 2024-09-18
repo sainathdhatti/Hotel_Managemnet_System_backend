@@ -1,5 +1,5 @@
-import { SpaBooking } from "src/spa_booking/spa_bookingEntity";
-import { StaffCategory } from "src/staff_category/staff_categoryEntity";
+import { SpaBooking } from "../spa_booking/spa_bookingEntity";
+import { StaffCategory } from "../staff_category/staff_categoryEntity";
 import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity('staff_members')
@@ -25,10 +25,10 @@ export class StaffMembers{
     @Column()
     password:string
 
-    @ManyToOne(()=>StaffCategory, staffcategory=>staffcategory.staffmembers)
+    @ManyToOne(()=>StaffCategory, staffcategory=>staffcategory.staffmembers,{onDelete:'SET NULL'})
     staffcategory:StaffCategory
 
-    @OneToMany(()=>SpaBooking,(spabooking)=>spabooking.staffmember)
+    @OneToMany(()=>SpaBooking,(spabooking)=>spabooking.staffmember,{onDelete:'SET NULL'})
     spabookings:SpaBooking[]
 
 }

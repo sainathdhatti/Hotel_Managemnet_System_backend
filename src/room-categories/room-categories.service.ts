@@ -30,7 +30,7 @@ export class RoomCategoriesService {
     roomCategory.description = createRoomCategoryDto.description || undefined;
   
     const amenitiesIds = 
-      typeof createRoomCategoryDto.amenitiesIds === 'string'
+      typeof createRoomCategoryDto.amenitiesIds === 'number'
         ? JSON.parse(createRoomCategoryDto.amenitiesIds).map((id) => Number(id))
         : Array.isArray(createRoomCategoryDto.amenitiesIds)
         ? createRoomCategoryDto.amenitiesIds.map((id) => Number(id))
