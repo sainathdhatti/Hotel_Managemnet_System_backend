@@ -1,9 +1,9 @@
-import { Booking } from "src/bookings/bookings.Entity";
-import { FinalBilling } from "src/final_billing/final_billing.Entity";
-import { SpaService } from "src/spa_service/spa_service.Entity";
-import { StaffMembers } from "src/staff_members/staff_membersEntity";
-import { TimeSlot } from "src/time_slot/time_slot.Entity";
-import { UserEntity } from "src/user/user.entity";
+import { Booking } from "../bookings/bookings.Entity";
+import { FinalBilling } from "../final_billing/final_billing.Entity";
+import { SpaService } from "../spa_service/spa_service.Entity";
+import { StaffMembers } from "../staff_members/staff_membersEntity";
+import { TimeSlot } from "../time_slot/time_slot.Entity";
+import { UserEntity } from "../user/user.entity";
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from "typeorm";
 
 export enum Gender {
@@ -44,19 +44,19 @@ export class SpaBooking{
     status: SpaBookingStatus;
 
 
-    @ManyToOne(()=>UserEntity,(user)=>user.spabookings)
+    @ManyToOne(()=>UserEntity,(user)=>user.spabookings,{onDelete:'SET NULL'})
     user:UserEntity
 
-    @ManyToOne(()=>SpaService,(spaservice)=>spaservice.spabookings)
+    @ManyToOne(()=>SpaService,(spaservice)=>spaservice.spabookings,{onDelete:'SET NULL'})
     spaservice:SpaService
 
-    @ManyToOne(()=>TimeSlot,(timeslot)=>timeslot.spabookings)
+    @ManyToOne(()=>TimeSlot,(timeslot)=>timeslot.spabookings,{onDelete:'SET NULL'})
     timeslot:TimeSlot
 
-    @ManyToOne(()=>StaffMembers,(staffmember)=>staffmember.spabookings)
+    @ManyToOne(()=>StaffMembers,(staffmember)=>staffmember.spabookings,{onDelete:'SET NULL'})
     staffmember:StaffMembers
 
-    @ManyToOne(()=>Booking,(booking)=>booking.spabookings)
+    @ManyToOne(()=>Booking,(booking)=>booking.spabookings,{onDelete:'SET NULL'})
     booking:Booking
 
 }

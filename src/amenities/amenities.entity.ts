@@ -1,5 +1,4 @@
-
-import { RoomCategories } from "src/room-categories/room-categories.entity";
+import { RoomCategories } from "../room-categories/room-categories.entity";
 import { Column, Entity, ManyToMany, PrimaryGeneratedColumn, JoinTable } from "typeorm";
 
 @Entity('amenities')
@@ -12,7 +11,7 @@ export class Amenities {
 
     @ManyToMany(() => RoomCategories, roomCategory => roomCategory.amenities)
     @JoinTable({
-        name: 'room_category_amenities', // The name of the join table
+        name: 'room_category_amenities', 
         joinColumn: {
             name: 'amenity_id',
             referencedColumnName: 'id'

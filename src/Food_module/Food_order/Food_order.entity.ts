@@ -4,6 +4,7 @@ import { Exclude, Type } from 'class-transformer';
 import { OrderItem } from './foodorderItem.entity';
 import { OrderStatus } from './dto/updateFoodOrderDto.dto';
 import { Booking } from 'src/bookings/bookings.Entity';
+
 //mport { FinalBilling } from 'src/final_billing/final_billing.Entity';
 
 @Entity('food_order')
@@ -23,11 +24,11 @@ export class FoodOrder {
   @Column({ type: 'enum', enum: OrderStatus, default: OrderStatus.PENDING })
   status: OrderStatus;
 
-  @ManyToOne(() => UserEntity, (user) => user.orders,{ cascade: true })
+  @ManyToOne(() => UserEntity, (user) => user.orders,{ cascade: true ,onDelete:'SET NULL'})
   @Type(() => UserEntity)
   user: UserEntity;
 
-  @OneToMany(() => OrderItem, (orderItem) => orderItem.order, { cascade: true })
+  @OneToMany(() => OrderItem, (orderItem) => orderItem.order, { cascade: true ,onDelete:'SET NULL'})
   @Type(() => OrderItem)
   @Exclude({ toPlainOnly: true }) 
   orderItems: OrderItem[];

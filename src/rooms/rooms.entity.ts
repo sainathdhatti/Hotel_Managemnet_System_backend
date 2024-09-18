@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from 'typeorm';
-import { RoomCategories } from 'src/room-categories/room-categories.entity';
+import { RoomCategories } from '../room-categories/room-categories.entity';
 
 export enum RoomStatus {
   PENDING = 'pending',
@@ -15,7 +15,7 @@ export class Room {
   roomNumber: number;
 
   @ManyToOne(() => RoomCategories, (roomCategory) => roomCategory.room, {
-    eager: true,
+    eager: true,onDelete:'SET NULL'
   })
   roomCategory: RoomCategories;
 

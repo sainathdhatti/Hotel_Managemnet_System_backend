@@ -1,6 +1,6 @@
-import { Amenities } from 'src/amenities/amenities.entity';
-import { Booking } from 'src/bookings/bookings.Entity';
-import { Room } from 'src/rooms/rooms.entity';
+import { Amenities } from '../amenities/amenities.entity';
+import { Booking } from '../bookings/bookings.Entity';
+import { Room } from '../rooms/rooms.entity';
 import { Column, Entity, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('roomcategories')
@@ -28,7 +28,7 @@ export class RoomCategories {
   @ManyToMany(() => Amenities, amenity => amenity.roomCategories)
     amenities: Amenities[];
 
-  @OneToMany(()=>Room,(room)=>room.roomCategory)
+  @OneToMany(()=>Room,(room)=>room.roomCategory,{onDelete:'SET NULL'})
   room:Room
   
  @OneToMany(()=>Booking,(roombooking)=>roombooking.roomcategory)

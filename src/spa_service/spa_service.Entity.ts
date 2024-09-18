@@ -1,4 +1,4 @@
-import { SpaBooking } from 'src/spa_booking/spa_bookingEntity';
+import { SpaBooking } from '../spa_booking/spa_bookingEntity';
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 
 @Entity('spa_services')
@@ -21,7 +21,7 @@ export class SpaService {
   @Column({default:0})
   totalAmount:number;
 
-  @OneToMany(()=>SpaBooking,(spabooking)=>spabooking.spaservice)
+  @OneToMany(()=>SpaBooking,(spabooking)=>spabooking.spaservice,{onDelete:'SET NULL'})
   spabookings:SpaBooking[]
 
 }

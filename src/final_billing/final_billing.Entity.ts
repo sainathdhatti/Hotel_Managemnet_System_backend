@@ -1,6 +1,6 @@
-import { Booking } from "src/bookings/bookings.Entity";
-import { Receptionist } from "src/reception/receptionist.Entity";
-import { SpaBooking } from "src/spa_booking/spa_bookingEntity";
+import { Booking } from "../bookings/bookings.Entity";
+import { Receptionist } from "../reception/receptionist.Entity";
+import { SpaBooking } from "../spa_booking/spa_bookingEntity";
 import { PrimaryGeneratedColumn, Column, Entity, OneToMany, ManyToOne } from "typeorm";
 
 @Entity('final_billing')

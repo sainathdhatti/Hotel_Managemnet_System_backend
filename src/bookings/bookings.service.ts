@@ -1,6 +1,4 @@
-
-import { BadRequestException, ConflictException, HttpException, Injectable, NotFoundException } from '@nestjs/common';
-
+import { BadRequestException, ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Booking, BookingStatus } from './bookings.Entity';
 import { Repository } from 'typeorm';
@@ -9,10 +7,9 @@ import { UserService } from 'src/user/user.service';
 import { RoomCategoriesService } from 'src/room-categories/room-categories.service';
 import { RoomsService } from 'src/rooms/rooms.service';
 import { Room, RoomStatus } from 'src/rooms/rooms.entity';
-import { UpdateBookingDto } from './dtos/updateBookings.dt
-
+import { UpdateBookingDto } from './dtos/updateBookings.dto';
 import { SpaBookingService } from 'src/spa_booking/spa_booking.service';
-
+// import { FinalBillingService } from 'src/final_billing/final_billing.service';
 
 @Injectable()
 export class BookingsService {
@@ -21,7 +18,8 @@ export class BookingsService {
     private readonly userService: UserService,
     private readonly roomcategoryService: RoomCategoriesService,
     private readonly roomService: RoomsService,
-
+    // private readonly spaBookingService: SpaBookingService
+    // private readonly finalBillingService: FinalBillingService
   ) {}
 
   async getAllBookings() {
@@ -116,11 +114,7 @@ export class BookingsService {
 
     const booking = new Booking();
     booking.noOfAdults = noOfAdults;
-
-    booking.noOfChildrens = noOfChildrens; // Use the correct property name
-
-    
-
+    booking.noOfChildrens = noOfChildrens;
     booking.user = findUser;
     booking.room = roomToBook;
     booking.roomcategory = findCategory;
@@ -133,10 +127,7 @@ export class BookingsService {
     booking.room.status = RoomStatus.BOOKED;
 
     const savedBooking = await this.bookingsRepo.save(booking);
-
-    //await this.finalBillingService.calculateRoomBookingAmount(savedBooking.bookingId);
-
-
+    // await this.finalBillingService.calculateRoomBookingAmount(savedBooking.bookingId);
     return savedBooking;
   }
 
@@ -150,45 +141,9 @@ export class BookingsService {
       throw new NotFoundException('Booking not found');
     }
 
-// Function to check availability for the given dates
-const checkRoomAvailability = async (newCheckInDate: Date, newCheckOutDate: Date) => {
-  const availableRooms = await this.filterAvailableRooms(rooms, newCheckInDate, newCheckOutDate);
-  return availableRooms;
-};
-
-let availableRooms = [];
-
-if (categoryId || checkInDate || checkOutDate) {
-  // Check availability only if categoryId or dates are provided
-  if (categoryId) {
-    availableRooms = await checkRoomAvailability(findBooking.checkInDate, findBooking.checkOutDate);
+    booking.status = status;
+    return this.bookingsRepo.save(booking);
   }
-
-  if (checkInDate && checkOutDate) {
-    availableRooms = await checkRoomAvailability(new Date(checkInDate), new Date(checkOutDate));
-  }
-
-  if (availableRooms.length === 0) {
-    throw new ConflictException('No available rooms for the selected dates');
-  }
-}
-
-// Update the booking with the new details
-findBooking.checkInDate = checkInDate ? new Date(checkInDate) : findBooking.checkInDate;
-findBooking.checkOutDate = checkOutDate ? new Date(checkOutDate) : findBooking.checkOutDate;
-findBooking.room = availableRooms[0]; // Example: Assigning the first available room
-findBooking.status = BookingStatus.BOOKED;
-findBooking.room.status = RoomStatus.BOOKED;
-
-// Save the updated booking
-const updatedBooking = await this.bookingsRepo.save(findBooking);
-
-// Return the updated booking with all related entities
-return this.bookingsRepo.findOne({
-  where: { bookingId: updatedBooking.bookingId },
-  relations: ['room', 'roomcategory', 'user'] // Ensure relations are included in the final result
-});
-
 
   async deleteBooking(bookingId: number) {
     const booking = await this.bookingsRepo.findOne({
@@ -219,6 +174,21 @@ return this.bookingsRepo.findOne({
     // Optionally, update the room status to available if needed
     booking.room.status = RoomStatus.AVAILABLE;
     return booking;
+  }
+
+  async getBookingIdOfBookedStatus(userId: number): Promise<number[]> {
+    // Query the repository to find bookings with the status 'CHECK_IN' for the given userId
+    const bookings = await this.bookingsRepo
+      .createQueryBuilder('booking')
+      .select('booking.bookingId') // Select only the booking ID
+      .where('booking.userId = :userId', { userId })
+      .andWhere('booking.status = :status', { status: 'CHECKED_IN' })
+      .getMany(); // Use getMany to return an array of results
+  
+    // Extract booking IDs from the query result
+    const bookingIds = bookings.map(booking => booking.bookingId);
+  
+    return bookingIds;
   }
   async getSpaBookingsOfBookedStatus(userId: number) {
     const bookings = await this.bookingsRepo

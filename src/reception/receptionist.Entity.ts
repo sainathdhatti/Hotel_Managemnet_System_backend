@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, ManyToOne, Column } from "typeorm";
-import { FinalBilling } from "src/final_billing/final_billing.Entity";
+import { FinalBilling } from "../final_billing/final_billing.Entity";
 
 @Entity('receptionist')
 export class Receptionist {
