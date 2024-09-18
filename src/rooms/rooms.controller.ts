@@ -31,6 +31,7 @@ export class RoomsController {
     return this.roomsService.findOne(id);
   }
 
+
   @Delete(':id')
   async removeRoom(@Param('id') id: number){
     return this.roomsService.remove(id);

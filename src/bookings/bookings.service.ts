@@ -1,57 +1,68 @@
-
-import { BadRequestException, ConflictException, HttpException, Injectable, NotFoundException } from '@nestjs/common';
-
-import { InjectRepository } from '@nestjs/typeorm';
-import { Booking, BookingStatus } from './bookings.Entity';
-import { Repository } from 'typeorm';
-import { CreateBookingDto } from './dtos/createBookings.dto';
-import { UserService } from 'src/user/user.service';
-import { RoomCategoriesService } from 'src/room-categories/room-categories.service';
-import { RoomsService } from 'src/rooms/rooms.service';
-import { Room, RoomStatus } from 'src/rooms/rooms.entity';
-import { UpdateBookingDto } from './dtos/updateBookings.dt
-
-import { SpaBookingService } from 'src/spa_booking/spa_booking.service';
-
+import {
+  BadRequestException,
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Booking, BookingStatus } from "./bookings.Entity";
+import { Repository } from "typeorm";
+import { CreateBookingDto } from "./dtos/createBookings.dto";
+import { UserService } from "src/user/user.service";
+import { RoomCategoriesService } from "src/room-categories/room-categories.service";
+import { RoomsService } from "src/rooms/rooms.service";
+import { Room, RoomStatus } from "src/rooms/rooms.entity";
 
 @Injectable()
 export class BookingsService {
   constructor(
-    @InjectRepository(Booking) private readonly bookingsRepo: Repository<Booking>,
+    @InjectRepository(Booking)
+    private readonly bookingsRepo: Repository<Booking>,
     private readonly userService: UserService,
     private readonly roomcategoryService: RoomCategoriesService,
     private readonly roomService: RoomsService,
-
+    @InjectRepository(Room)
+    private readonly roomRepo: Repository<Room>
   ) {}
 
   async getAllBookings() {
-    return this.bookingsRepo.find({ relations: ['user', 'roomcategory', 'spabookings', 'foodOrders'] });
+    return this.bookingsRepo.find({
+      relations: ["user", "roomcategory", "spabookings", "foodOrders"],
+    });
   }
 
   async getBookingById(id: number) {
     return await this.bookingsRepo.findOne({
       where: { bookingId: id },
-      relations: ['user', 'roomcategory']
+      relations: ["user", "roomcategory", "spabookings", "foodOrders"],
     });
   }
 
   async getBookingCustomerById(customerId: number) {
     const user = await this.userService.getUser(customerId);
     if (!user) {
-      throw new NotFoundException('User not found');
+      throw new NotFoundException("User not found");
     }
     const bookings = await this.bookingsRepo.find({
       where: { user: user },
-      relations: ['user', 'roomcategory', 'foodOrders']
+      relations: ["user", "roomcategory", "foodOrders"],
     });
     return bookings;
   }
 
-  private async filterAvailableRooms(rooms: Room[], checkInDate: Date, checkOutDate: Date): Promise<Room[]> {
+  private async filterAvailableRooms(
+    rooms: Room[],
+    checkInDate: Date,
+    checkOutDate: Date
+  ): Promise<Room[]> {
     const availableRooms = [];
 
     for (const room of rooms) {
-      const isAvailable = await this.isRoomAvailable(room.id, checkInDate, checkOutDate);
+      const isAvailable = await this.isRoomAvailable(
+        room.id,
+        checkInDate,
+        checkOutDate
+      );
       if (isAvailable) {
         availableRooms.push(room);
       }
@@ -60,67 +71,90 @@ export class BookingsService {
     return availableRooms;
   }
 
-  private async isRoomAvailable(roomId: number, checkInDate: Date, checkOutDate: Date): Promise<boolean> {
-    const conflictingBookings = await this.bookingsRepo.createQueryBuilder('booking')
-      .where('booking.room.id = :roomId', { roomId })
-      .andWhere('booking.checkInDate < :checkOutDate', { checkOutDate })
-      .andWhere('booking.checkOutDate > :checkInDate', { checkInDate })
+  private async isRoomAvailable(
+    roomId: number,
+    checkInDate: Date,
+    checkOutDate: Date
+  ): Promise<boolean> {
+    const conflictingBookings = await this.bookingsRepo
+      .createQueryBuilder("booking")
+      .where("booking.room.id = :roomId", { roomId })
+      .andWhere("booking.checkInDate < :checkOutDate", { checkOutDate })
+      .andWhere("booking.checkOutDate > :checkInDate", { checkInDate })
       .getMany();
 
     return conflictingBookings.length === 0;
   }
 
   async createBooking(createBooking: CreateBookingDto) {
-    const { userId, categoryId, checkInDate, checkOutDate, noOfAdults, noOfChildrens } = createBooking;
-    
+    const {
+      userId,
+      categoryId,
+      checkInDate,
+      checkOutDate,
+      noOfAdults,
+      noOfChildrens,
+    } = createBooking;
+
     const findUser = await this.userService.getUser(userId);
-    const findCategory = await this.roomcategoryService.findOneRoomCategory(categoryId);
-  
+    const findCategory = await this.roomcategoryService.findOneRoomCategory(
+      categoryId
+    );
+
     if (!findUser || !findCategory) {
-      throw new NotFoundException('User or category not found');
+      throw new NotFoundException("User or category not found");
     }
-  
+
     const now = new Date();
     const checkIn = new Date(checkInDate);
     const checkOut = new Date(checkOutDate);
-  
+
     if (checkIn < now) {
-      throw new BadRequestException('Check-in date must be greater than or equal to the current date');
-    }
-  
-    if (checkOut <= checkIn) {
-      throw new BadRequestException('Check-out date must be after the check-in date');
-    }
-  
-    const overlappingBooking = await this.bookingsRepo.createQueryBuilder('booking')
-      .where('booking.user.id = :userId', { userId })
-      .andWhere('booking.checkInDate < :checkOutDate', { checkOutDate })
-      .andWhere('booking.checkOutDate > :checkInDate', { checkInDate })
-      .getOne();
-  
-    if (overlappingBooking) {
-      throw new ConflictException('User already has a booking for the selected dates');
+      throw new BadRequestException(
+        "Check-in date must be greater than or equal to the current date"
+      );
     }
 
-    const rooms = await this.roomService.findAllRoomsByCategory(categoryId);
-    const availableRooms = await this.filterAvailableRooms(rooms, checkIn, checkOut);
-  
-    if (availableRooms.length === 0) {
-      throw new ConflictException('No available rooms for the selected dates');
+    if (checkOut <= checkIn) {
+      throw new BadRequestException(
+        "Check-out date must be after the check-in date"
+      );
     }
-  
+
+    const overlappingBooking = await this.bookingsRepo
+      .createQueryBuilder("booking")
+      .where("booking.user.id = :userId", { userId })
+      .andWhere("booking.checkInDate < :checkOutDate", { checkOutDate })
+      .andWhere("booking.checkOutDate > :checkInDate", { checkInDate })
+      .getOne();
+
+    if (overlappingBooking) {
+      throw new ConflictException(
+        "User already has a booking for the selected dates"
+      );
+    }
+
+    const category = await this.roomService.findAllRoomsByCategory(categoryId);
+    const availableRooms = await this.filterAvailableRooms(
+      category,
+      checkIn,
+      checkOut
+    );
+
+    if (availableRooms.length === 0) {
+      throw new ConflictException("No available rooms for the selected dates");
+    }
+
     const roomToBook = availableRooms[0];
-    const numberOfNights = Math.ceil((checkOut.getTime() - checkIn.getTime()) / (1000 * 60 * 60 * 24));
+    const numberOfNights = Math.ceil(
+      (checkOut.getTime() - checkIn.getTime()) / (1000 * 60 * 60 * 24)
+    );
     const totalPrice = findCategory.price * numberOfNights;
-    const advancePayment = totalPrice * 0.40;
+    const advancePayment = totalPrice * 0.4;
 
     const booking = new Booking();
     booking.noOfAdults = noOfAdults;
-
-    booking.noOfChildrens = noOfChildrens; // Use the correct property name
-
-    
-
+    booking.noOfChildrens = noOfChildrens;
     booking.user = findUser;
     booking.room = roomToBook;
     booking.roomcategory = findCategory;
@@ -133,75 +167,36 @@ export class BookingsService {
     booking.room.status = RoomStatus.BOOKED;
 
     const savedBooking = await this.bookingsRepo.save(booking);
-
-    //await this.finalBillingService.calculateRoomBookingAmount(savedBooking.bookingId);
-
-
+    // await this.finalBillingService.calculateRoomBookingAmount(savedBooking.bookingId);
     return savedBooking;
   }
 
   async updateBookingStatus(bookingId: number, status: BookingStatus) {
     const booking = await this.bookingsRepo.findOne({
       where: { bookingId },
-      relations: ['room', 'roomcategory', 'user'],
+      relations: ["room", "roomcategory", "user"],
     });
 
     if (!booking) {
-      throw new NotFoundException('Booking not found');
+      throw new NotFoundException("Booking not found");
     }
 
-// Function to check availability for the given dates
-const checkRoomAvailability = async (newCheckInDate: Date, newCheckOutDate: Date) => {
-  const availableRooms = await this.filterAvailableRooms(rooms, newCheckInDate, newCheckOutDate);
-  return availableRooms;
-};
-
-let availableRooms = [];
-
-if (categoryId || checkInDate || checkOutDate) {
-  // Check availability only if categoryId or dates are provided
-  if (categoryId) {
-    availableRooms = await checkRoomAvailability(findBooking.checkInDate, findBooking.checkOutDate);
+    booking.status = status;
+    return this.bookingsRepo.save(booking);
   }
-
-  if (checkInDate && checkOutDate) {
-    availableRooms = await checkRoomAvailability(new Date(checkInDate), new Date(checkOutDate));
-  }
-
-  if (availableRooms.length === 0) {
-    throw new ConflictException('No available rooms for the selected dates');
-  }
-}
-
-// Update the booking with the new details
-findBooking.checkInDate = checkInDate ? new Date(checkInDate) : findBooking.checkInDate;
-findBooking.checkOutDate = checkOutDate ? new Date(checkOutDate) : findBooking.checkOutDate;
-findBooking.room = availableRooms[0]; // Example: Assigning the first available room
-findBooking.status = BookingStatus.BOOKED;
-findBooking.room.status = RoomStatus.BOOKED;
-
-// Save the updated booking
-const updatedBooking = await this.bookingsRepo.save(findBooking);
-
-// Return the updated booking with all related entities
-return this.bookingsRepo.findOne({
-  where: { bookingId: updatedBooking.bookingId },
-  relations: ['room', 'roomcategory', 'user'] // Ensure relations are included in the final result
-});
-
 
   async deleteBooking(bookingId: number) {
     const booking = await this.bookingsRepo.findOne({
       where: { bookingId },
-      relations: ['room', 'roomcategory', 'user'],
+      relations: ["room", "roomcategory", "user"],
     });
 
     if (!booking) {
-      throw new NotFoundException('Booking not found');
+      throw new NotFoundException("Booking not found");
     }
 
     // Get current date and time
-    const now = new Date(); 
+    const now = new Date();
 
     // Calculate the time difference between now and the booking check-in date
     const checkInDate = new Date(booking.checkInDate);
@@ -209,7 +204,9 @@ return this.bookingsRepo.findOne({
     const hoursDifference = timeDifference / (1000 * 60 * 60);
 
     if (hoursDifference <= 48) {
-      throw new BadRequestException('You can only cancel the booking more than 48 hours before the check-in time');
+      throw new BadRequestException(
+        "You can only cancel the booking more than 48 hours before the check-in time"
+      );
     }
 
     // Update the booking status to canceled or delete the booking
@@ -220,19 +217,63 @@ return this.bookingsRepo.findOne({
     booking.room.status = RoomStatus.AVAILABLE;
     return booking;
   }
-  async getSpaBookingsOfBookedStatus(userId: number) {
-    const bookings = await this.bookingsRepo
-      .createQueryBuilder('booking')
-      .leftJoinAndSelect('booking.user', 'user')
-      .leftJoinAndSelect('booking.room', 'room')
-      .leftJoinAndSelect('booking.roomcategory', 'roomcategory')
-      .leftJoinAndSelect('booking.spabookings', 'spabookings')
-      .leftJoinAndSelect('spabookings.spaservice', 'spaservice')
-      .leftJoinAndSelect('booking.foodOrders', 'foodOrders')
-      .where('user.id = :userId', { userId })
-      .andWhere('booking.status = :status', { status: BookingStatus.CHECKED_IN })
-      .getMany();
-  
-    return bookings;
+
+  async getPresentBookings(userId: number, bookingId: number) {
+    const bill = await this.bookingsRepo.findOne({
+      where: { user: { id: userId }, bookingId: bookingId },
+      relations: [
+        "user",
+        "roomcategory",
+        "spabookings",
+        "foodOrders",
+        "spabookings.spaservice",
+      ],
+    });
+    return bill;
   }
+
+  // async getAvailableRooms(checkInDate: Date, checkOutDate: Date){
+  //   if (checkInDate >= checkOutDate) {
+  //     throw new BadRequestException('Check-out date must be after check-in date');
+  //   }
+  //   const query = `
+  //     SELECT r.*
+  //     FROM rooms r
+  //     LEFT JOIN bookings b ON r.id = b.roomId
+  //     AND b.checkInDate < ?
+  //     AND b.checkOutDate > ?
+  //     WHERE b.bookingId IS NULL;
+  //   `;
+
+  //   // Use the query method from TypeORM's entity manager
+  //   const rooms = await this.bookingsRepo.query(query, [checkOutDate, checkInDate]);
+
+    async getAvailableRooms(checkInDate: Date, checkOutDate: Date): Promise<any[]> {
+      // Validate the input dates
+      if (checkInDate >= checkOutDate) {
+          throw new BadRequestException('Check-out date must be after check-in date');
+      }
+
+      const availableRooms = await this.roomRepo.query(`
+          SELECT r.id AS roomId,
+                 r.roomNumber,
+                 rc.name AS roomCategory,
+                 rc.noOfAdults,
+                 rc.noOfChildren,
+                 rc.price,
+                 CASE
+                     WHEN b.bookingId IS NOT NULL THEN 'BOOKED'
+                     ELSE 'AVAILABLE'
+                 END AS bookingStatus
+          FROM rooms r
+          JOIN roomcategories rc ON r.roomCategoryId = rc.id
+          LEFT JOIN bookings b ON b.roomId = r.id
+          AND b.checkInDate < ?
+          AND b.checkOutDate > ?
+          WHERE b.bookingId IS NULL
+      `, [checkOutDate, checkInDate]);
+
+      return availableRooms; // Adjust the return format as needed
+  }
+
 }
