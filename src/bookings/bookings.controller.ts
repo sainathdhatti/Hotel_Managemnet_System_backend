@@ -73,15 +73,25 @@ export class BookingsController {
     }
   }
 
-  @Get("users/:userId/status")
-  async getCheckedInBooking(@Param("userId") userId: number) {
-    return await this.bookingsService.getSpaBookingsOfBookedStatus(userId);
+  @Get("user/:userId/booking/:bookingId")
+
+  async getCheckedInBooking(@Param("userId") userId: number, @Param("bookingId") bookingId: number) {
+    return await this.bookingsService.getPresentBookings(userId, bookingId);
   }
 
-  @Get('users/:userId/BookingId')
-  async getBookingIdOfBookedStatus(@Param("userId") userId: number) {
-    return await this.bookingsService.getBookingIdOfBookedStatus(userId);
-  }
+@Get('users/:userId/BookingId')
+async getBookingIdOfBookedStatus(@Param('userId') userId: number) {
+  return await this.bookingsService.getBookingIdOfBookedStatus(userId);
+}
+
+@Get('available/:checkInDate/:checkOutDate')
+async getAvailableRooms(
+  @Param('checkInDate') checkInDate: Date,
+  @Param('checkOutDate') checkOutDate: Date
+) {
+  return this.bookingsService.getAvailableRooms(checkInDate, checkOutDate);
+}
+
 
   @Patch(":bookingId")
   @UsePipes(new ValidationPipe())

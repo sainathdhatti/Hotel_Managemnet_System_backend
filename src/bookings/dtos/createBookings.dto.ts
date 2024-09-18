@@ -29,4 +29,6 @@ export class CreateBookingDto {
   @IsEnum(BookingStatus)
   @IsOptional()
   status: BookingStatus;
+
+  
 }
