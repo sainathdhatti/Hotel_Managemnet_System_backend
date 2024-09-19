@@ -115,7 +115,7 @@ export class BookingsService {
     const checkIn = new Date(checkInDate);
     const checkOut = new Date(checkOutDate);
 
-    if (checkIn < now) {
+    if (checkIn <= now) {
       throw new BadRequestException(
         "Check-in date must be greater than or equal to the current date"
       );

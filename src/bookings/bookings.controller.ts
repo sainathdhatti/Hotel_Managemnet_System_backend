@@ -73,16 +73,12 @@ export class BookingsController {
     }
   }
 
-  @Get("user/:userId/booking/:bookingId")
 
+  @Get("user/:userId/booking/:bookingId")
   async getCheckedInBooking(@Param("userId") userId: number, @Param("bookingId") bookingId: number) {
     return await this.bookingsService.getPresentBookings(userId, bookingId);
   }
 
-@Get('users/:userId/BookingId')
-async getBookingIdOfBookedStatus(@Param('userId') userId: number) {
-  return await this.bookingsService.getBookingIdOfBookedStatus(userId);
-}
 
 @Get('available/:checkInDate/:checkOutDate')
 async getAvailableRooms(
