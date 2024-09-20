@@ -53,6 +53,7 @@ import { FinalBillingModule } from './final_billing/final_billing.module';
 import { FinalBilling } from './final_billing/final_billing.Entity';
 import { Receptionist } from './reception/receptionist.Entity';
 import { ReceptionistModule } from './reception/receptionist.module';
+import { ReceptionistAuthModule } from './reception/Receptionist_Auth/receptionist_auth.module';
 
 
 
@@ -114,12 +115,12 @@ import { ReceptionistModule } from './reception/receptionist.module';
         port: Number(process.env.Email_Port),
         secure: process.env.Email_Secure === 'true',
         auth: {
-          user: process.env.Email,
+          user: process.env.EMAIL,
           pass: process.env.PASSWORD,
         },
       },
       defaults: {
-        from: `"Your Name" <${process.env.Email}>`,
+        from: `"Hotel Enhance" <${process.env.EMAIL}>`,
       },
     }),
     SpaServiceModule,
@@ -146,6 +147,7 @@ import { ReceptionistModule } from './reception/receptionist.module';
     ReviewsModule,
     FinalBillingModule,
     ReceptionistModule,
+    ReceptionistAuthModule
   ],
   controllers: [AppController],
   providers: [AppService,],

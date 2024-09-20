@@ -59,30 +59,31 @@ export class BookingsController {
     }
   }
 
-  @Get("users/:userid")
-  @UsePipes(new ValidationPipe())
-  async getBookingByCustomerId(@Param("userid", ParseIntPipe) userid: number) {
-    console.log("hello World");
-    try {
-      return await this.bookingsService.getBookingCustomerById(userid);
-    } catch (error) {
-      throw new HttpException(
-        error.message,
-        error.status || HttpStatus.NOT_FOUND
-      );
-    }
+  // @Get("users/:userid")
+  // @UsePipes(new ValidationPipe())
+  // async getBookingByCustomerId(@Param("userid", ParseIntPipe) userid: number) {
+  //   //console.log("hello World");
+  //   try {
+  //     return await this.bookingsService.getBookingCustomerById(userid);
+  //   } catch (error) {
+  //     throw new HttpException(
+  //       error.message,
+  //       error.status || HttpStatus.NOT_FOUND
+  //     );
+  //   }
+  // }
+
+  @Get("users/:userId")
+  async getUserByBookingId(@Param("userId") userId: number) {
+    return await this.bookingsService.getUserByBookingId(userId);
   }
 
-  @Get("user/:userId/booking/:bookingId")
 
+  @Get("user/:userId/booking/:bookingId")
   async getCheckedInBooking(@Param("userId") userId: number, @Param("bookingId") bookingId: number) {
     return await this.bookingsService.getPresentBookings(userId, bookingId);
   }
 
-@Get('users/:userId/BookingId')
-async getBookingIdOfBookedStatus(@Param('userId') userId: number) {
-  return await this.bookingsService.getBookingIdOfBookedStatus(userId);
-}
 
 @Get('available/:checkInDate/:checkOutDate')
 async getAvailableRooms(

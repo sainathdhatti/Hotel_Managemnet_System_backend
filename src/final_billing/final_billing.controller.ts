@@ -11,7 +11,6 @@ export class FinalBillingController {
     }
 
     @Get("user/:userId/booking/:bookingId")
-
     async calculateTotalAmount(@Param('userId') userId: number,@Param('bookingId') bookingId: number) {
         return await this.finalBillingService.calculateTotalAmount(userId,bookingId);
     }
