@@ -8,6 +8,7 @@ import { OrderService } from "src/Food_module/Food_order/food_order.service";
 import { Repository } from "typeorm";
 import { FinalBilling } from "./final_billing.Entity";
 import { BookingStatus } from "src/bookings/bookings.Entity";
+import { OrderStatus } from "src/Food_module/Food_order/dto/updateFoodOrderDto.dto";
 
 @Injectable()
 export class FinalBillingService {
@@ -100,7 +101,7 @@ export class FinalBillingService {
     let totalSpaAmount = 0;
     let totalFoodAmount = 0;
     bookedBookings.spabookings.forEach((spaBooking) => {
-      if (spaBooking && spaBooking.spaservice) {
+      if (spaBooking && spaBooking.spaservice && spaBooking.status === SpaBookingStatus.DONE) {
         if (typeof spaBooking.spaservice.price === "string") {
           totalSpaAmount += parseFloat(spaBooking.spaservice.price);
         } else if (typeof spaBooking.spaservice.price === "number") {
@@ -111,7 +112,7 @@ export class FinalBillingService {
     });
   
     bookedBookings.foodOrders.forEach((foodOrder) => {
-      if (foodOrder) {
+      if (foodOrder && foodOrder.status === OrderStatus.DELIVERED) {
         if (typeof foodOrder.totalAmount === "string") {
           totalFoodAmount += parseFloat(foodOrder.totalAmount);
         } else if (typeof foodOrder.totalAmount === "number") {

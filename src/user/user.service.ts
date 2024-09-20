@@ -57,7 +57,6 @@ export class UserService {
       <div style="font-family: Arial, sans-serif; color: #333; line-height: 1.6;">
         <div style="background-color: #f4f4f4; padding: 20px; text-align: center;">
           <h1 style="color: #e74c3c;">Welcome to Hotel Enhance, ${firstName}!</h1>
-          // <img src="https://yourdomain.com/images/welcome-image.jpg" alt="Welcome" style="max-width: 100%; height: auto; border-radius: 8px;" />
         </div>
         <div style="background-color: #ffffff; padding: 20px; text-align: center;">
           <p style="font-size: 18px;">

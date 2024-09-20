@@ -242,6 +242,7 @@ export class OrderService {
         lastName: order.user.lastName,
         phoneNumber: order.user.phoneNumber,
       },
+   
     };
   }
 }
